@@ -1,10 +1,18 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+// import { AppController } from './app.controller';
+// import { AppService } from './app.service';
+import { MongooseModule } from '@nestjs/mongoose';
 
+import { UserModule } from './modules/user/user.module';
+
+import dotenv = require('dotenv');
+
+dotenv.config({ path: '.env' });
+
+const DBModule = MongooseModule.forRoot(process.env.MONGOOSE_URL);
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [DBModule, UserModule],
+  // controllers: [AppController],
+  // providers: [AppService],
 })
 export class AppModule {}
