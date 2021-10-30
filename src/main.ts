@@ -3,8 +3,6 @@ import { Logger } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
-
-
 const PORT = 3000;
 
 async function bootstrap() {
