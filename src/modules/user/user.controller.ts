@@ -31,12 +31,12 @@ export class UserController {
     };
   }
 
-  // GET /user/:_id
-  @Get(':_id')
-  async findOne(@Param('_id') _id: string): Promise<UserResponse<User>> {
+  // GET /user/:username
+  @Get(':username')
+  async findOne(@Param('username') username: string): Promise<UserResponse<User>> {
     return {
       code: 200,
-      data: await this.userService.findOne(_id),
+      data: await this.userService.findOne(username),
       message: 'success',
     };
   }

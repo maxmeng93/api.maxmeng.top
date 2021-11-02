@@ -14,8 +14,8 @@ export class UserService {
   }
 
   // 查找单个用户
-  async findOne(_id: string): Promise<User> {
-    return await this.userModel.findById(_id);
+  async findOne(username: string): Promise<User> {
+    return await this.userModel.findById(username);
   }
 
   // 添加用户
