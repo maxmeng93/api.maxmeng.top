@@ -1,21 +1,42 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 // import { AppController } from './app.controller';
 // import { AppService } from './app.service';
-import { MongooseModule } from '@nestjs/mongoose';
+// import { MongooseModule } from '@nestjs/mongoose';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { UserModule } from './modules/user/user.module';
-import { BookmarkModule } from './modules/bookmark/bookmark.module';
-import { ConfigModule } from './modules/config/config.modules';
+// import { UserModule } from './modules/user/user.module';
+// import { BookmarkModule } from './modules/bookmark/bookmark.module';
 
-import * as dotenv from 'dotenv';
+import { UsersModule } from './modules/users/users.module';
+import { AuthModule } from './modules/auth/auth.module';
 
-console.log(ConfigModule);
+// const DBModule = MongooseModule.forRoot(process.env.MONGOOSE_URL);
+const DBModule = TypeOrmModule.forRoot({
+  type: 'mysql',
+  host: 'localhost',
+  port: 3306,
+  username: 'root',
+  password: '',
+  database: 'test',
+  // 实体
+  // entities: [User],
+  // 自动加载实体
+  autoLoadEntities: true,
+  // TODO: 不应该在生产环境设置，否则会丢失数据
+  synchronize: true,
+});
 
-dotenv.config({ path: '.env' });
-
-const DBModule = MongooseModule.forRoot(process.env.MONGOOSE_URL);
 @Module({
-  imports: [DBModule, ConfigModule, UserModule, BookmarkModule],
+  imports: [
+    DBModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: ['.env.local', '.env'],
+    }),
+    UsersModule,
+    AuthModule /*UserModule, BookmarkModule*/,
+  ],
   // controllers: [AppController],
   // providers: [AppService],
 })
