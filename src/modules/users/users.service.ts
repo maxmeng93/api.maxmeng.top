@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
+import { Public } from '../auth/constants';
 
 @Injectable()
 export class UsersService {
@@ -10,6 +11,7 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
+  @Public()
   findAll(): Promise<User[]> {
     return this.usersRepository.find();
   }
