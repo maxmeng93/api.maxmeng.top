@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from './user.entity';
+import { User } from './users.entity';
 import { Public } from '../auth/constants';
+import { CreateUserDTO } from './users.dto';
 
 @Injectable()
 export class UsersService {
@@ -10,6 +11,21 @@ export class UsersService {
     @InjectRepository(User)
     private usersRepository: Repository<User>,
   ) {}
+
+  @Public()
+  async register(createUser: CreateUserDTO) {
+    const { username } = createUser;
+
+    const existUser = await this.usersRepository.findOne({
+      where: { username },
+    });
+    if (existUser) {
+      throw new HttpException('用户名已存在', HttpStatus.BAD_REQUEST);
+    }
+
+    const newUser = await this.usersRepository.create(createUser);
+    return await this.usersRepository.save(newUser);
+  }
 
   @Public()
   findAll(): Promise<User[]> {

@@ -1,17 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-// import { AppController } from './app.controller';
-// import { AppService } from './app.service';
-// import { MongooseModule } from '@nestjs/mongoose';
 import { TypeOrmModule } from '@nestjs/typeorm';
-
-// import { UserModule } from './modules/user/user.module';
-// import { BookmarkModule } from './modules/bookmark/bookmark.module';
-
 import { UsersModule } from './modules/users/users.module';
-import { AuthModule } from './modules/auth/auth.module';
+// import { AuthModule } from './modules/auth/auth.module';
 
-// const DBModule = MongooseModule.forRoot(process.env.MONGOOSE_URL);
 const DBModule = TypeOrmModule.forRoot({
   type: 'mysql',
   host: 'localhost',
@@ -35,9 +27,7 @@ const DBModule = TypeOrmModule.forRoot({
       envFilePath: ['.env.local', '.env'],
     }),
     UsersModule,
-    AuthModule /*UserModule, BookmarkModule*/,
+    // AuthModule,
   ],
-  // controllers: [AppController],
-  // providers: [AppService],
 })
 export class AppModule {}
