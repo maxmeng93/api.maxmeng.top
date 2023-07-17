@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './modules/users/users.module';
-// import { AuthModule } from './modules/auth/auth.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 const DBModule = TypeOrmModule.forRoot({
   type: 'mysql',
@@ -27,7 +27,7 @@ const DBModule = TypeOrmModule.forRoot({
       envFilePath: ['.env.local', '.env'],
     }),
     UsersModule,
-    // AuthModule,
+    AuthModule,
   ],
 })
 export class AppModule {}

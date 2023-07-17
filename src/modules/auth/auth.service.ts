@@ -1,22 +1,24 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
-import { JwtService } from '@nestjs/jwt';
+import { compareSync } from 'bcrypt';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private usersService: UsersService,
-    private jwtService: JwtService,
-  ) {}
+  constructor(private usersService: UsersService) {}
 
-  async signIn(username: string, pass: string): Promise<any> {
+  async validateUser(username: string, password: string): Promise<any> {
     const user = await this.usersService.findOneByName(username);
-    if (user?.password !== pass) {
-      throw new UnauthorizedException();
+
+    if (!user) {
+      throw new BadRequestException('用户名不存在');
     }
-    const payload = { sub: user.id, username: user.username };
-    return {
-      access_token: await this.jwtService.signAsync(payload),
-    };
+
+    if (!compareSync(password, user.password)) {
+      throw new BadRequestException('密码错误');
+    }
+
+    const { password: _, ...result } = user;
+
+    return result;
   }
 }

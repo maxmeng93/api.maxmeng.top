@@ -3,6 +3,8 @@ import {
   ClassSerializerInterceptor,
   Controller,
   Post,
+  Get,
+  Query,
   UseInterceptors,
 } from '@nestjs/common';
 import { CreateUserDTO } from './users.dto';
@@ -21,10 +23,25 @@ export class UsersController {
   constructor(private readonly userService: UsersService) {}
 
   @ApiOperation({ summary: '注册用户' })
-  @ApiResponse({ status: 201, type: [User] })
+  @ApiResponse({ status: 201, type: User })
   @UseInterceptors(ClassSerializerInterceptor)
   @Post('register')
   register(@Body() createUser: CreateUserDTO) {
     return this.userService.register(createUser);
+  }
+
+  @ApiOperation({ summary: '查找所有用户' })
+  @ApiResponse({ status: 200, type: [User] })
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Get('list')
+  findAll() {
+    return this.userService.findAll();
+  }
+
+  @ApiOperation({ summary: '根据用户名查找用户' })
+  @ApiResponse({ status: 200, type: User })
+  @Get('find')
+  findOne(@Query('username') username: string) {
+    return this.userService.findOneByName(username);
   }
 }
