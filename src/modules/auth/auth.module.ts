@@ -25,7 +25,7 @@ import { APP_GUARD } from '@nestjs/core';
     LocalStrategy,
     JwtStrategy,
     // 为所有接口添加jwt策略，只有调用@Public()装饰器的接口才不会添加jwt策略
-    // { provide: APP_GUARD, useClass: JwtAuthGuard },
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
   ],
   exports: [AuthService],
 })
