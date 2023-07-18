@@ -35,7 +35,7 @@ export class UsersController {
   @ApiOperation({ summary: '查找所有用户' })
   @ApiResponse({ status: 200, type: [User] })
   @UseInterceptors(ClassSerializerInterceptor)
-  @Public()
+  // @Public()
   @Get('list')
   findAll() {
     return this.userService.findAll();

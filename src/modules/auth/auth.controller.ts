@@ -6,6 +6,7 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { LocalAuthGuard } from './local-auth.guard';
 import { AuthService } from './auth.service';
@@ -19,8 +20,6 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   signIn(@Body() user: LoginDTO, @Request() req) {
-    console.log('xxx', user);
-    // return req.user;
     return this.authService.login(req.user);
   }
 

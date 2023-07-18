@@ -16,7 +16,7 @@ import { APP_GUARD } from '@nestjs/core';
     PassportModule,
     JwtModule.register({
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '12h' },
     }),
   ],
   controllers: [AuthController],
@@ -24,6 +24,7 @@ import { APP_GUARD } from '@nestjs/core';
     AuthService,
     LocalStrategy,
     JwtStrategy,
+    // 为所有接口添加jwt策略，只有调用@Public()装饰器的接口才不会添加jwt策略
     // { provide: APP_GUARD, useClass: JwtAuthGuard },
   ],
   exports: [AuthService],

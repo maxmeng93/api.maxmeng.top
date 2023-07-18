@@ -16,6 +16,8 @@ async function bootstrap() {
     .setTitle('api example')
     .setDescription('The cats API description')
     .setVersion('1.0')
+    .addBearerAuth({ in: 'header', type: 'http' }, 'token')
+    .addSecurityRequirements('token')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document);
