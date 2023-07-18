@@ -2,7 +2,6 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './users.entity';
-import { Public } from '../auth/constants';
 import { CreateUserDTO } from './users.dto';
 
 @Injectable()
@@ -12,7 +11,6 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
-  @Public()
   async register(createUser: CreateUserDTO) {
     const { username } = createUser;
 
@@ -27,7 +25,6 @@ export class UsersService {
     return await this.usersRepository.save(newUser);
   }
 
-  @Public()
   findAll(): Promise<User[]> {
     return this.usersRepository.find();
   }

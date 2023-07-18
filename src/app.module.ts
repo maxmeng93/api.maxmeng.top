@@ -3,6 +3,8 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
 const DBModule = TypeOrmModule.forRoot({
   type: 'mysql',
@@ -29,5 +31,7 @@ const DBModule = TypeOrmModule.forRoot({
     UsersModule,
     AuthModule,
   ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
