@@ -16,11 +16,11 @@ export class BookmarkService {
   }
 
   async addOne(body: CreateBookmarkDTO): Promise<void> {
-    const { parentId } = body;
+    const { pid } = body;
     let parent;
-    if (parentId) {
-      parent = await this.bookmarkRepository.findOneBy({ id: parentId });
+    if (pid) {
+      parent = await this.bookmarkRepository.findOneBy({ id: pid });
     }
-    await this.bookmarkRepository.save({ ...body, parent });
+    await this.bookmarkRepository.save({ ...body, pid, parent });
   }
 }

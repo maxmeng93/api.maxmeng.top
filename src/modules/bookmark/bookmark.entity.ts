@@ -15,6 +15,10 @@ export class Bookmark {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @ApiProperty({ description: '父级ID' })
+  @Column()
+  pid: number;
+
   @ApiProperty({ description: '标题' })
   @Column()
   title: string;

@@ -12,5 +12,5 @@ export class CreateBookmarkDTO {
   readonly link: string;
 
   @ApiProperty({ description: '父级ID' })
-  readonly parentId: number;
+  readonly pid: number;
 }
