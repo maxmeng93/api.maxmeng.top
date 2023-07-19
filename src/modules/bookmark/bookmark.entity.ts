@@ -6,7 +6,6 @@ import {
   PrimaryGeneratedColumn,
   TreeChildren,
   TreeParent,
-  TreeLevelColumn,
 } from 'typeorm';
 import { BookmarkType } from './bookmark.interface';
 
@@ -21,7 +20,7 @@ export class Bookmark {
   title: string;
 
   @ApiProperty({ description: '类型' })
-  @Column({ type: 'enum', enum: BookmarkType, default: BookmarkType.BOOKMARK })
+  @Column({ type: 'enum', enum: BookmarkType, default: BookmarkType.bookmark })
   type: BookmarkType;
 
   @ApiProperty({ description: '链接' })

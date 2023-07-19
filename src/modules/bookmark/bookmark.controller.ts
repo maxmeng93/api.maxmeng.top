@@ -2,8 +2,8 @@ import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateBookmarkDTO } from './bookmark.dto';
 import { BookmarkService } from './bookmark.service';
-import { BookmarkDTO } from './bookmark.dto';
 import { Bookmark } from './bookmark.entity';
+import { Public } from '../auth/constants';
 
 interface BookmarkResponse<T = unknown> {
   code: number;
@@ -16,6 +16,7 @@ interface BookmarkResponse<T = unknown> {
 export class BookmarkController {
   constructor(private readonly bookmarkService: BookmarkService) {}
 
+  @Public()
   @Get()
   async findAll(): Promise<BookmarkResponse<Bookmark[]>> {
     return {
@@ -25,6 +26,7 @@ export class BookmarkController {
     };
   }
 
+  @Public()
   @Post()
   async addOne(@Body() body: CreateBookmarkDTO): Promise<BookmarkResponse> {
     await this.bookmarkService.addOne(body);
