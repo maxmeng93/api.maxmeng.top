@@ -1,13 +1,11 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { bookmarkSchema } from './bookmark.schema';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { BookmarkController } from './bookmark.controller';
 import { BookmarkService } from './bookmark.service';
+import { Bookmark } from './bookmark.entity';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([{ name: 'Bookmarks', schema: bookmarkSchema }]),
-  ],
+  imports: [TypeOrmModule.forFeature([Bookmark])],
   controllers: [BookmarkController],
   providers: [BookmarkService],
 })

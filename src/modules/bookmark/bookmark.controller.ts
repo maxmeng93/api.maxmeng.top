@@ -1,7 +1,9 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { CreateBookmarkDTO } from './bookmark.dto';
-import { Bookmark } from './bookmark.interface';
 import { BookmarkService } from './bookmark.service';
+import { BookmarkDTO } from './bookmark.dto';
+import { Bookmark } from './bookmark.entity';
 
 interface BookmarkResponse<T = unknown> {
   code: number;
@@ -9,6 +11,7 @@ interface BookmarkResponse<T = unknown> {
   message: string;
 }
 
+@ApiTags('bookmark')
 @Controller('bookmark')
 export class BookmarkController {
   constructor(private readonly bookmarkService: BookmarkService) {}

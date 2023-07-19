@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { BookmarkModule } from './modules/bookmark/bookmark.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -30,6 +31,7 @@ const DBModule = TypeOrmModule.forRoot({
     }),
     UsersModule,
     AuthModule,
+    BookmarkModule,
   ],
   controllers: [AppController],
   providers: [AppService],
