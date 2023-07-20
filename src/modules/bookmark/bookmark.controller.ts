@@ -1,15 +1,9 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { CreateBookmarkDTO } from './bookmark.dto';
+import { ApiTags, ApiBody } from '@nestjs/swagger';
+import { CreateBookmarkDTO, CreateBookmarkTreeDTO } from './bookmark.dto';
 import { BookmarkService } from './bookmark.service';
 import { Bookmark } from './bookmark.entity';
 import { Public } from '../auth/constants';
-
-interface BookmarkResponse<T = unknown> {
-  code: number;
-  data?: T;
-  message: string;
-}
 
 @ApiTags('bookmark')
 @Controller('bookmark')
@@ -17,22 +11,26 @@ export class BookmarkController {
   constructor(private readonly bookmarkService: BookmarkService) {}
 
   @Public()
-  @Get()
-  async findAll(): Promise<BookmarkResponse<Bookmark[]>> {
-    return {
-      code: 200,
-      data: await this.bookmarkService.findAll(),
-      message: 'success',
-    };
+  @Get('list')
+  async findAll(): Promise<Bookmark[]> {
+    return await this.bookmarkService.findAll();
   }
 
   @Public()
-  @Post()
-  async addOne(@Body() body: CreateBookmarkDTO): Promise<BookmarkResponse> {
-    await this.bookmarkService.addOne(body);
-    return {
-      code: 200,
-      message: 'success',
-    };
+  @Post('add')
+  async addOne(@Body() body: CreateBookmarkDTO): Promise<Bookmark> {
+    return await this.bookmarkService.addOne(body);
+  }
+
+  @Public()
+  @ApiBody({ type: [CreateBookmarkTreeDTO] })
+  @Post('saveTree')
+  async saveTree(@Body() body: CreateBookmarkTreeDTO[]): Promise<Bookmark[]> {
+    const result = [];
+    for (const tree of body) {
+      const savedTree = await this.bookmarkService.saveTree(tree);
+      result.push(savedTree);
+    }
+    return result;
   }
 }
