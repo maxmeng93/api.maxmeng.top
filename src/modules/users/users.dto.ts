@@ -1,4 +1,5 @@
 import { IsEmail, IsNotEmpty } from 'class-validator';
+import { OmitType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateUserDTO {
@@ -18,3 +19,5 @@ export class CreateUserDTO {
   @IsEmail()
   readonly email: string;
 }
+
+export class UpdateUserDTO extends OmitType(CreateUserDTO, ['username']) {}
