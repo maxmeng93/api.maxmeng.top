@@ -29,4 +29,10 @@ export class BookmarkController {
     }
     return result;
   }
+
+  @Post('log')
+  async log(@Body() body: any): Promise<any> {
+    console.log(body);
+    return body;
+  }
 }
