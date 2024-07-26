@@ -7,11 +7,10 @@ import {
   Query,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateUserDTO } from './users.dto';
 import { UsersService } from './users.service';
 import { User } from './users.entity';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Public } from '../auth/constants';
 
 @ApiTags('users')

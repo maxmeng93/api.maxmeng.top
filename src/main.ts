@@ -5,8 +5,6 @@ import { AppModule } from './app.module';
 
 const PORT = 3000;
 
-console.log('env', process.env.NODE_ENV);
-
 async function bootstrap() {
   const logger = new Logger('bootstrap');
 
