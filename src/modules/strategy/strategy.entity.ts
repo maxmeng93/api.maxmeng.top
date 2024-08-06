@@ -22,8 +22,8 @@ export class Strategy {
   etfCode: string;
 
   @ApiProperty({ description: '用户' })
-  @Column()
-  user: string;
+  @Column({ name: 'user_id' })
+  userId: string;
 
   @ApiProperty({ description: '创建时间' })
   @CreateDateColumn({ name: 'created_at' })

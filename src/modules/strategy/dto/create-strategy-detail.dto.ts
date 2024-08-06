@@ -18,33 +18,33 @@ export class CreateStrategyDetailDto {
   @IsNumber({ maxDecimalPlaces: 3 })
   @Type(() => Number)
   @IsNotEmpty()
-  buy_price: number;
+  buyPrice: number;
 
   @ApiProperty({ description: '入股数' })
   @IsInt()
   @IsNotEmpty()
-  buy_quantity: number;
+  buyQuantity: number;
 
   @ApiProperty({ description: '买入金额' })
   @IsNumber({ maxDecimalPlaces: 2 })
   @Type(() => Number)
   @IsNotEmpty()
-  buy_amount: number;
+  buyAmount: number;
 
   @ApiProperty({ description: '卖出价' })
   @IsNumber({ maxDecimalPlaces: 3 })
   @Type(() => Number)
   @IsNotEmpty()
-  sell_price: number;
+  sellPrice: number;
 
   @ApiProperty({ description: '出股数' })
   @IsInt()
   @IsNotEmpty()
-  sell_quantity: number;
+  sellQuantity: number;
 
   @ApiProperty({ description: '卖出金额' })
   @IsNumber({ maxDecimalPlaces: 2 })
   @Type(() => Number)
   @IsNotEmpty()
-  sell_amount: number;
+  sellAmount: number;
 }

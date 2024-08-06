@@ -12,12 +12,12 @@ export class CreateStrategyDto {
   @ApiProperty({ description: 'etf编码' })
   @IsString()
   @IsNotEmpty()
-  etf_code: string;
+  etfCode: string;
 
   @ApiProperty({ description: '用户' })
   @IsString()
   @IsNotEmpty()
-  user: string;
+  userId: string;
 
   @ApiProperty({ description: '策略详情', type: [CreateStrategyDetailDto] })
   @IsArray()
