@@ -1,26 +1,29 @@
-import { Controller, Post, Get, Body } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Controller, Get, Post, Delete, Body, Param } from '@nestjs/common';
 import { StrategyService } from './strategy.service';
+import { CreateStrategyDto } from './dto/create-strategy.dto';
 import { Strategy } from './strategy.entity';
 
-@ApiTags('strategies')
 @Controller('strategies')
 export class StrategyController {
   constructor(private readonly strategyService: StrategyService) {}
 
-  @ApiOperation({ summary: '创建网格策略' })
-  @ApiResponse({ type: Strategy })
   @Post()
-  async createStrategy(
-    @Body() strategyData: Partial<Strategy>,
-  ): Promise<Strategy> {
-    return this.strategyService.createStrategy(strategyData);
+  create(@Body() createStrategyDto: CreateStrategyDto): Promise<Strategy> {
+    return this.strategyService.create(createStrategyDto);
   }
 
-  @ApiOperation({ summary: '获取所有网格策略' })
-  @ApiResponse({ type: [Strategy] })
   @Get()
-  async findAll(): Promise<Strategy[]> {
+  findAll(): Promise<Strategy[]> {
     return this.strategyService.findAll();
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: number): Promise<Strategy> {
+    return this.strategyService.findOne(id);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: number): Promise<void> {
+    return this.strategyService.remove(id);
   }
 }

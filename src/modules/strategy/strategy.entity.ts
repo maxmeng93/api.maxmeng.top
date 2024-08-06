@@ -18,7 +18,7 @@ export class Strategy {
   name: string;
 
   @ApiProperty({ description: 'etf编码' })
-  @Column()
+  @Column({ name: 'etf_code' })
   etfCode: string;
 
   @ApiProperty({ description: '用户' })
@@ -26,12 +26,13 @@ export class Strategy {
   user: string;
 
   @ApiProperty({ description: '创建时间' })
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
   @ApiProperty({ description: '策略详情' })
   @OneToMany(() => StrategyDetail, (detail) => detail.strategy, {
     cascade: true,
+    onDelete: 'CASCADE',
   })
   details: StrategyDetail[];
 }
