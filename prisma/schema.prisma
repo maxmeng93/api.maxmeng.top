@@ -24,24 +24,6 @@ model User {
   updateTime DateTime @updatedAt
 }
 
-model Bookmark {
-  id    Int      @id @default(autoincrement())
-  pid   Int
-  title String
-  type  BookmarkType @default(bookmark)
-  link  String @default("")
-
-  // 自引用关系
-  parentId Int?
-  parent   Bookmark? @relation("BookmarkToBookmark", fields: [parentId], references: [id])
-  children Bookmark[] @relation("BookmarkToBookmark")
-}
-
-enum BookmarkType {
-  bookmark
-  folder
-}
-
 model Strategy {
   id        Int              @id @default(autoincrement())
   name      String
@@ -52,7 +34,7 @@ model Strategy {
 }
 
 model StrategyDetail {
-  id           Int      @id @default(autoincrement())
+  id           Int   @id @default(autoincrement())
   level        Float
   type         Int
   buyPrice     Float
@@ -62,6 +44,6 @@ model StrategyDetail {
   sellQuantity Int
   sellAmount   Float
 
-  strategyId   Int
-  strategy     Strategy @relation(fields: [strategyId], references: [id])
+  strategyId Int
+  strategy   Strategy @relation(fields: [strategyId], references: [id])
 }

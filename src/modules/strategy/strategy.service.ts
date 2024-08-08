@@ -14,16 +14,23 @@ export class StrategyService {
         create: data.details,
       },
     };
-    return this.prisma.strategy.create({ data: strategyData });
+
+    return this.prisma.strategy.create({
+      data: strategyData,
+      include: { details: true },
+    });
   }
 
   async findAll(): Promise<Strategy[]> {
-    return this.prisma.strategy.findMany();
+    return this.prisma.strategy.findMany({
+      include: { details: true },
+    });
   }
 
   async findOne(id: number): Promise<Strategy> {
     const strategy = await this.prisma.strategy.findUnique({
       where: { id },
+      include: { details: true },
     });
     if (!strategy) {
       throw new NotFoundException(`Strategy with ID ${id} not found`);
@@ -31,43 +38,16 @@ export class StrategyService {
     return strategy;
   }
 
-  async remove(id: number): Promise<Strategy> {
-    return this.prisma.strategy.delete({
+  async remove(id: number): Promise<null> {
+    // 先删除关联的 StrategyDetail
+    await this.prisma.strategyDetail.deleteMany({
+      where: { strategyId: id },
+    });
+
+    await this.prisma.strategy.delete({
       where: { id },
     });
+
+    return null;
   }
-
-  // constructor(
-  //   @InjectRepository(Strategy)
-  //   private strategyRepository: Repository<Strategy>,
-  //   @InjectRepository(StrategyDetail)
-  //   private strategyDetailRepository: Repository<StrategyDetail>,
-  // ) {}
-
-  // async create(createStrategyDto: CreateStrategyDto): Promise<Strategy> {
-  //   const strategy = this.strategyRepository.create(createStrategyDto);
-  //   return this.strategyRepository.save(strategy);
-  // }
-
-  // findAll(): Promise<Strategy[]> {
-  //   return this.strategyRepository.find({ relations: ['details'] });
-  // }
-
-  // async findOne(id: number): Promise<Strategy> {
-  //   const strategy = await this.strategyRepository.findOne({
-  //     where: { id },
-  //     relations: ['details'],
-  //   });
-  //   if (!strategy) {
-  //     throw new NotFoundException(`Strategy with ID ${id} not found`);
-  //   }
-  //   return strategy;
-  // }
-
-  // async remove(id: number): Promise<void> {
-  //   const result = await this.strategyRepository.delete(id);
-  //   if (result.affected === 0) {
-  //     throw new NotFoundException(`Strategy with ID ${id} not found`);
-  //   }
-  // }
 }

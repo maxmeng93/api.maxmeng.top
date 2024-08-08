@@ -1,43 +1,44 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { User } from './users.entity';
-import { CreateUserDTO } from './users.dto';
+import { User } from '@prisma/client';
+import { CreateUserDTO } from './dto/users.dto';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   async register(createUser: CreateUserDTO) {
     const { username } = createUser;
 
-    const existUser = await this.usersRepository.findOne({
-      where: { username },
-    });
+    const existUser = await this.findOneByName(username);
     if (existUser) {
       throw new HttpException('用户名已存在', HttpStatus.BAD_REQUEST);
     }
 
-    const newUser = await this.usersRepository.create(createUser);
-    return await this.usersRepository.save(newUser);
+    return this.prisma.user.create({
+      data: createUser,
+    });
   }
 
-  findAll(): Promise<User[]> {
-    return this.usersRepository.find();
+  async findAll(): Promise<User[]> {
+    return this.prisma.user.findMany();
   }
 
-  findOne(id: number): Promise<User | null> {
-    return this.usersRepository.findOneBy({ id });
+  findOne(id: string): Promise<User> {
+    return this.prisma.user.findUnique({
+      where: { id },
+    });
   }
 
-  findOneByName(username: string): Promise<User | null> {
-    return this.usersRepository.findOneBy({ username });
+  async findOneByName(username: string): Promise<User> {
+    return this.prisma.user.findFirst({
+      where: { username },
+    });
   }
 
-  async remove(id: number): Promise<void> {
-    await this.usersRepository.delete(id);
+  async remove(id: string): Promise<User> {
+    return this.prisma.user.delete({
+      where: { id },
+    });
   }
 }
