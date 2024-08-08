@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Delete, Body, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Delete,
+  Body,
+  Param,
+  ParseIntPipe,
+} from '@nestjs/common';
 import {
   ApiCreatedResponse,
   ApiOkResponse,
@@ -32,12 +40,12 @@ export class StrategyController {
 
   @Get(':id')
   @ApiOkResponse({ type: StrategyEntity })
-  findOne(@Param('id') id: string): Promise<StrategyModel> {
-    return this.strategyService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<StrategyModel> {
+    return this.strategyService.findOne(id);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string): Promise<null> {
-    return this.strategyService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number): Promise<null> {
+    return this.strategyService.remove(id);
   }
 }
