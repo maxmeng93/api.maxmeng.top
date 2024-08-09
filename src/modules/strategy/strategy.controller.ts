@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Put,
   Delete,
   Body,
   Param,
@@ -42,6 +43,16 @@ export class StrategyController {
   @ApiOkResponse({ type: StrategyEntity })
   findOne(@Param('id', ParseIntPipe) id: number): Promise<StrategyModel> {
     return this.strategyService.findOne(id);
+  }
+
+  @Put(':id')
+  @ApiBody({ type: CreateStrategyDto })
+  @ApiOkResponse({ type: StrategyEntity })
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateStrategyDto: CreateStrategyDto,
+  ): Promise<StrategyModel> {
+    return this.strategyService.update(id, updateStrategyDto);
   }
 
   @Delete(':id')

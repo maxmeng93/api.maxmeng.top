@@ -38,6 +38,22 @@ export class StrategyService {
     return strategy;
   }
 
+  async update(id: number, data: CreateStrategyDto): Promise<Strategy> {
+    const strategyData: Prisma.StrategyUpdateInput = {
+      ...data,
+      details: {
+        deleteMany: {},
+        create: data.details,
+      },
+    };
+
+    return this.prisma.strategy.update({
+      where: { id },
+      data: strategyData,
+      include: { details: true },
+    });
+  }
+
   async remove(id: number): Promise<null> {
     // 先删除关联的 StrategyDetail
     await this.prisma.strategyDetail.deleteMany({

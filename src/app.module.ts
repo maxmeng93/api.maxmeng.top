@@ -15,7 +15,7 @@ import { PrismaModule } from './modules/prisma/prisma.module';
     }),
     PrismaModule,
     UsersModule,
-    // AuthModule,
+    AuthModule,
     StrategyModule,
   ],
   controllers: [AppController],

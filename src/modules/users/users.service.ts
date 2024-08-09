@@ -1,22 +1,33 @@
+import * as bcrypt from 'bcrypt';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { CreateUserDTO } from './dto/users.dto';
 import { PrismaService } from '../prisma/prisma.service';
 
+export const roundsOfHashing = 10;
+
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  async register(createUser: CreateUserDTO) {
-    const { username } = createUser;
+  async register(createUserDto: CreateUserDTO) {
+    const { username } = createUserDto;
 
     const existUser = await this.findOneByName(username);
     if (existUser) {
       throw new HttpException('用户名已存在', HttpStatus.BAD_REQUEST);
     }
 
+    const hashedPassword = await bcrypt.hash(
+      createUserDto.password,
+      roundsOfHashing,
+    );
+
     return this.prisma.user.create({
-      data: createUser,
+      data: {
+        ...createUserDto,
+        password: hashedPassword,
+      },
     });
   }
 
@@ -24,7 +35,7 @@ export class UsersService {
     return this.prisma.user.findMany();
   }
 
-  findOne(id: string): Promise<User> {
+  async findOne(id: string): Promise<User> {
     return this.prisma.user.findUnique({
       where: { id },
     });

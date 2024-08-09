@@ -3,6 +3,10 @@ import { Exclude } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UserEntity implements User {
+  constructor(partial: Partial<UserEntity>) {
+    Object.assign(this, partial);
+  }
+
   id: string;
 
   @ApiProperty({ description: '用户名' })
@@ -19,9 +23,6 @@ export class UserEntity implements User {
 
   @ApiProperty({ description: '邮箱' })
   email: string;
-
-  // @Column('simple-enum', { enum: ['admin', 'user'] })
-  // role: string;
 
   @ApiProperty({ description: '创建日期' })
   createTime: Date;

@@ -4,6 +4,11 @@ import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { IS_PUBLIC_KEY } from './constants';
 
+/**
+ * jwt守卫，用于验证token，确定用户是否有权限访问接口
+ * 如果接口上有@Public()装饰器，则不会验证token
+ * 如果是开发环境，则不会验证token
+ */
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
   constructor(private reflector: Reflector) {
