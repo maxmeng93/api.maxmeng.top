@@ -9,7 +9,6 @@ export class CreateUserDTO {
   readonly username: string;
 
   @ApiProperty({ description: '昵称' })
-  @IsNotEmpty()
   readonly nickname: string;
 
   @ApiProperty({ description: '密码' })
