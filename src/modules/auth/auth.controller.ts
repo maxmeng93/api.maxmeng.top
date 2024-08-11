@@ -6,10 +6,14 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiTags, ApiBody } from '@nestjs/swagger';
 import { LocalAuthGuard } from './local-auth.guard';
 import { AuthService } from './auth.service';
-import { LoginDTO } from './auth.dto';
+import {
+  LoginDTO,
+  RequestPasswordResetDto,
+  ResetPasswordDto,
+} from './auth.dto';
 import { Public } from '../auth/constants';
 
 @ApiTags('auth')
@@ -27,5 +31,17 @@ export class AuthController {
   @Get('profile')
   getProfile(@Request() req) {
     return req.user;
+  }
+
+  @Post('request-password-reset')
+  @ApiBody({ type: RequestPasswordResetDto })
+  async requestPasswordReset(@Body() dto: RequestPasswordResetDto) {
+    return this.authService.requestPasswordReset(dto);
+  }
+
+  @Post('reset-password')
+  @ApiBody({ type: ResetPasswordDto })
+  async resetPassword(@Body() dto: ResetPasswordDto) {
+    return this.authService.resetPassword(dto);
   }
 }

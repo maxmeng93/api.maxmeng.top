@@ -12,3 +12,22 @@ export class LoginDTO {
   @ApiProperty({ description: '密码' })
   readonly password: string;
 }
+
+export class RequestPasswordResetDto {
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty({ description: '邮箱' })
+  email: string;
+}
+
+export class ResetPasswordDto {
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty({ description: 'token' })
+  token: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty({ description: '密码' })
+  newPassword: string;
+}

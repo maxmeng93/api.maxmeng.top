@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { MailerModule } from '@nestjs-modules/mailer';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { StrategyModule } from './modules/strategy/strategy.module';
@@ -12,6 +13,22 @@ import { PrismaModule } from './modules/prisma/prisma.module';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env.local', '.env'],
+    }),
+    MailerModule.forRoot({
+      transport: {
+        host: process.env.EMAIL_HOST,
+        port: +process.env.EMAIL_PORT,
+        auth: {
+          user: process.env.EMAIL_USERNAME,
+          pass: process.env.EMAIL_PASSWORD,
+        },
+        tls: {
+          rejectUnauthorized: true,
+        },
+      },
+      defaults: {
+        from: `"ETF投资分析" <${process.env.EMAIL_USERNAME}>`,
+      },
     }),
     PrismaModule,
     UsersModule,
