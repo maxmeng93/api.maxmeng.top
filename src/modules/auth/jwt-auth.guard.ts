@@ -23,10 +23,11 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       context.getClass(),
     ]);
 
-    // 如果是开发环境，直接返回true，不需要验证token
-    if (process.env.NODE_ENV === 'development') {
-      return true;
-    }
+    // // 如果是开发环境，直接返回true，不需要验证token
+    // // 但是会导致 @Request() req: Request 无法获取到用户信息
+    // if (process.env.NODE_ENV === 'development') {
+    //   return true;
+    // }
 
     if (isPublic) {
       return true;

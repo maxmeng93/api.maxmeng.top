@@ -10,6 +10,7 @@ import { UsersService } from '../users/users.service';
 import { UserEntity } from '../users/entity/users.entity';
 import { RequestPasswordResetDto, ResetPasswordDto } from './auth.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { encryptPassword } from 'src/utils';
 
 @Injectable()
 export class AuthService {
@@ -43,7 +44,6 @@ export class AuthService {
 
   async requestPasswordReset(data: RequestPasswordResetDto): Promise<void> {
     const { email } = data;
-    console.log('data', data);
     const user = await this.prisma.user.findUnique({ where: { email } });
 
     if (!user) {
@@ -58,15 +58,15 @@ export class AuthService {
     const resetLink = `https://etf.maxmeng.top/reset-password?token=${token}`;
 
     await this.mailerService.sendMail({
-      // from: 'max1@maxmeng.top',
+      // from: 'xxx@xxx.xxx',
       to: email,
       subject: '密码重置',
-      text: `点击这里重置密码: <a href="${resetLink}" target="_blank">重置密码</a>`,
+      html: `点击这里重置密码: <a href="${resetLink}" target="_blank">重置密码</a>`,
     });
   }
 
   async resetPassword(resetPasswordDto: ResetPasswordDto): Promise<void> {
-    const { token, newPassword } = resetPasswordDto;
+    const { token, password } = resetPasswordDto;
 
     const payload = this.jwtService.verify(token);
 
@@ -78,9 +78,11 @@ export class AuthService {
       throw new NotFoundException('User not found');
     }
 
+    const hashedPassword = await encryptPassword(password);
+
     await this.prisma.user.update({
       where: { id: user.id },
-      data: { password: newPassword }, // 在此处确保密码经过加密处理
+      data: { password: hashedPassword },
     });
   }
 }

@@ -1,4 +1,5 @@
 import { HttpAdapterHost, NestFactory, Reflector } from '@nestjs/core';
+import { ConfigService } from '@nestjs/config';
 import {
   Logger,
   ValidationPipe,
@@ -8,12 +9,17 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { PrismaClientExceptionFilter } from './prisma-client-exception/prisma-client-exception.filter';
 
-const PORT = 3000;
-
 async function bootstrap() {
   const logger = new Logger('bootstrap');
 
   const app = await NestFactory.create(AppModule);
+
+  // 获取 ConfigService 实例
+  const configService = app.get(ConfigService);
+
+  // 从环境变量中获取 PORT
+  const PORT = configService.get<number>('PORT') || 3000;
+
   app.useGlobalPipes(
     new ValidationPipe({
       // 过滤DTO中不存在或没有添加任何验证修饰器的属性

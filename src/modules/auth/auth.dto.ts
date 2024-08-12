@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString, IsEmail } from 'class-validator';
 
 export class LoginDTO {
   @IsNotEmpty()
@@ -16,6 +16,7 @@ export class LoginDTO {
 export class RequestPasswordResetDto {
   @IsNotEmpty()
   @IsString()
+  @IsEmail()
   @ApiProperty({ description: '邮箱' })
   email: string;
 }
@@ -29,5 +30,5 @@ export class ResetPasswordDto {
   @IsNotEmpty()
   @IsString()
   @ApiProperty({ description: '密码' })
-  newPassword: string;
+  password: string;
 }
