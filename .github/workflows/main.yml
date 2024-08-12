@@ -1,0 +1,35 @@
+name: Deploy NestJS App
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to Server
+        env:
+          HOST: ${{ secrets.SSH_HOST }} # 服务器的IP地址或域名
+          USERNAME: ${{ secrets.SSH_USER }} # SSH用户名
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY }} # SSH私钥
+          REMOTE_DIR: ${{ secrets.REMOTE_DIR }} # 服务器上的项目目录
+        run: |
+          echo "$SSH_PRIVATE_KEY" > private_key
+          chmod 600 private_key
+          rsync -avz -e "ssh -i private_key -o StrictHostKeyChecking=no" ./dist/ $USERNAME@$HOST:$REMOTE_DIR
+          ssh -i private_key -o StrictHostKeyChecking=no $USERNAME@$HOST <<EOF
+          cd /var/www/api.maxmeng.top
+          git checkout -- .
+          git pull
+          pnpm install
+          pnpm run build
+          pm2 restart etf
+          EOF

@@ -33,12 +33,14 @@ export class AuthController {
     return req.user;
   }
 
+  @Public()
   @Post('request-password-reset')
   @ApiBody({ type: RequestPasswordResetDto })
   async requestPasswordReset(@Body() dto: RequestPasswordResetDto) {
     return this.authService.requestPasswordReset(dto);
   }
 
+  @Public()
   @Post('reset-password')
   @ApiBody({ type: ResetPasswordDto })
   async resetPassword(@Body() dto: ResetPasswordDto) {
