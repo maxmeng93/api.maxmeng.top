@@ -1,4 +1,10 @@
-import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  IsOptional,
+  MinLength,
+} from 'class-validator';
 import { OmitType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -8,8 +14,10 @@ export class CreateUserDTO {
   @MinLength(5)
   readonly username: string;
 
-  @ApiProperty({ description: '昵称' })
-  readonly nickname: string;
+  @ApiProperty({ description: '昵称', required: false })
+  @IsString()
+  @IsOptional()
+  readonly nickname?: string;
 
   @ApiProperty({ description: '密码' })
   @IsNotEmpty()

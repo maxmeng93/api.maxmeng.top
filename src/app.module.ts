@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { UsersModule } from './modules/users/users.module';
+import { UsersModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { StrategyModule } from './modules/strategy/strategy.module';
 import { AppController } from './app.controller';

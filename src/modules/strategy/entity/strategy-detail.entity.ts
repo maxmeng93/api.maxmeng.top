@@ -1,4 +1,4 @@
-import { StrategyDetail } from '@prisma/client';
+import { StrategyDetail, StrategyType } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 
@@ -10,7 +10,7 @@ export class StrategyDetailEntity implements StrategyDetail {
   level: number;
 
   @ApiProperty({ description: '类型' })
-  type: number;
+  type: StrategyType;
 
   @ApiProperty({ description: '买入价' })
   @Transform(({ value }) => parseFloat(value))

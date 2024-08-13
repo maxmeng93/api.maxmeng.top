@@ -18,6 +18,9 @@ export class StrategyEntity implements Strategy {
   @ApiProperty({ description: '创建时间' })
   createdAt: Date;
 
-  @ApiProperty({ description: '策略详情' })
+  @ApiProperty({ description: '修改时间' })
+  updatedAt: Date;
+
+  @ApiProperty({ description: '策略详情', type: [StrategyDetailEntity] })
   details: StrategyDetailEntity[];
 }

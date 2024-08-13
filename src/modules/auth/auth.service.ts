@@ -6,8 +6,8 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { MailerService } from '@nestjs-modules/mailer';
-import { UsersService } from '../users/users.service';
-import { UserEntity } from '../users/entity/users.entity';
+import { UserService } from '../user/user.service';
+import { UserEntity } from '../user/entity/users.entity';
 import { RequestPasswordResetDto, ResetPasswordDto } from './auth.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { encryptPassword } from 'src/utils';
@@ -15,14 +15,14 @@ import { encryptPassword } from 'src/utils';
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UsersService,
+    private userService: UserService,
     private jwtService: JwtService,
     private mailerService: MailerService,
     private prisma: PrismaService,
   ) {}
 
   async validateUser(username: string, password: string): Promise<any> {
-    const user = await this.usersService.findOneByName(username);
+    const user = await this.userService.findOneByName(username);
 
     if (!user) {
       throw new BadRequestException('用户名不存在');

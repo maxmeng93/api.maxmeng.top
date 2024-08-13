@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsInt, IsNotEmpty } from 'class-validator';
+import { IsNumber, IsInt, IsNotEmpty, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
+import { StrategyType } from '@prisma/client';
 
 export class CreateStrategyDetailDto {
   @ApiProperty({ description: '档位' })
@@ -9,10 +10,14 @@ export class CreateStrategyDetailDto {
   @IsNotEmpty()
   level: number;
 
-  @ApiProperty({ description: '类型' })
-  @IsInt()
+  @ApiProperty({
+    description: '类型',
+    enum: StrategyType,
+    enumName: 'StrategyType',
+  })
+  @IsString()
   @IsNotEmpty()
-  type: number;
+  type: StrategyType;
 
   @ApiProperty({ description: '买入价' })
   @IsNumber({ maxDecimalPlaces: 3 })

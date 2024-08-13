@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Strategy, Prisma } from '@prisma/client';
+import { Strategy, StrategyTrade, Prisma } from '@prisma/client';
 import { CreateStrategyDto } from './dto/create-strategy.dto';
+import { CreateStrategyTradeDto } from './dto/create-strategy-trade.dto';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -65,5 +66,20 @@ export class StrategyService {
     });
 
     return null;
+  }
+
+  async createTrade(
+    strategyId: number,
+    data: CreateStrategyTradeDto,
+  ): Promise<StrategyTrade> {
+    return await this.prisma.strategyTrade.create({
+      data: { ...data, strategyId: strategyId },
+    });
+  }
+
+  async findTradeByStrategyId(strategyId: number): Promise<StrategyTrade[]> {
+    return this.prisma.strategyTrade.findMany({
+      where: { strategyId: strategyId },
+    });
   }
 }

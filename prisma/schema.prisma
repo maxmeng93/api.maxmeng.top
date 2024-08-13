@@ -17,33 +17,61 @@ model User {
   id         String   @id @default(uuid())
   username   String   @unique
   nickname   String?  @default("")
-  password   String   @default("")
+  password   String
   avatar     String?  @default("")
-  email      String   @unique @default("")
+  email      String   @unique
   createTime DateTime @default(now())
-  updateTime DateTime @updatedAt
+  updateTime DateTime @default(now()) @updatedAt
 }
 
+// 网格策略
 model Strategy {
   id        Int              @id @default(autoincrement())
-  name      String
+  name      String           @unique
   etfCode   String
-  userId    String
   createdAt DateTime         @default(now())
+  updatedAt DateTime         @default(now()) @updatedAt
   details   StrategyDetail[]
+  trades    StrategyTrade[]
+  userId    String
 }
 
+// 网格策略级别
+enum StrategyType {
+  SMALL
+  MIDDLE
+  BIG
+}
+
+// 网格详情
 model StrategyDetail {
-  id           Int   @id @default(autoincrement())
+  id           Int          @id @default(autoincrement())
+  type         StrategyType
   level        Float
-  type         Int
   buyPrice     Float
   buyQuantity  Int
   buyAmount    Float
   sellPrice    Float
   sellQuantity Int
   sellAmount   Float
+  strategyId   Int
+  strategy     Strategy     @relation(fields: [strategyId], references: [id])
+}
 
+// 交易类型
+enum TradeType {
+  BUY
+  SELL
+}
+
+// 网格交易
+model StrategyTrade {
+  id         Int       @id @default(autoincrement())
+  type       TradeType
+  price      Float
+  quantity   Int
+  amount     Float
+  brokerage  Float
   strategyId Int
-  strategy   Strategy @relation(fields: [strategyId], references: [id])
+  strategy   Strategy  @relation(fields: [strategyId], references: [id])
 }

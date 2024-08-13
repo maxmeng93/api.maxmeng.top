@@ -5,6 +5,7 @@ import {
   Put,
   Delete,
   Body,
+  Request,
   Param,
   ParseIntPipe,
 } from '@nestjs/common';
@@ -15,33 +16,41 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 import { StrategyService } from './strategy.service';
-import { Strategy as StrategyModel } from '@prisma/client';
+import { Strategy, StrategyTrade } from '@prisma/client';
 import { CreateStrategyDto } from './dto/create-strategy.dto';
+import { CreateStrategyTradeDto } from './dto/create-strategy-trade.dto';
 import { StrategyEntity } from './entity/strategy.entity';
+import { StrategyTradeEntity } from './entity/strategy-trade.entity';
 
-@Controller('strategies')
-@ApiTags('strategies')
+import { Public } from '../auth/constants';
+
+@Controller('strategiy')
+@ApiTags('strategiy')
 export class StrategyController {
   constructor(private readonly strategyService: StrategyService) {}
 
   @Post()
-  @ApiBody({ type: CreateStrategyDto }) // 请求体（request body）
+  @ApiBody({ type: CreateStrategyDto })
   @ApiCreatedResponse({ type: StrategyEntity })
-  // @ApiResponse({ status: 200, type: CreateStrategyDto })
-  // @ApiResponse({ status: 400, description: 'Bad Request.' })
-  create(@Body() createStrategyDto: CreateStrategyDto): Promise<StrategyModel> {
-    return this.strategyService.create(createStrategyDto);
+  create(
+    @Body() createStrategyDto: CreateStrategyDto,
+    @Request() req,
+  ): Promise<Strategy> {
+    return this.strategyService.create({
+      ...createStrategyDto,
+      userId: req.user.userId,
+    });
   }
 
   @Get()
   @ApiOkResponse({ type: StrategyEntity, isArray: true })
-  findAll(): Promise<StrategyModel[]> {
+  findAll(): Promise<Strategy[]> {
     return this.strategyService.findAll();
   }
 
   @Get(':id')
   @ApiOkResponse({ type: StrategyEntity })
-  findOne(@Param('id', ParseIntPipe) id: number): Promise<StrategyModel> {
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<Strategy> {
     return this.strategyService.findOne(id);
   }
 
@@ -51,12 +60,31 @@ export class StrategyController {
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateStrategyDto: CreateStrategyDto,
-  ): Promise<StrategyModel> {
+  ): Promise<Strategy> {
     return this.strategyService.update(id, updateStrategyDto);
   }
 
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number): Promise<null> {
     return this.strategyService.remove(id);
+  }
+
+  @Post(':id/trade')
+  @ApiBody({ type: CreateStrategyTradeDto })
+  @ApiCreatedResponse({ type: StrategyTradeEntity })
+  createTrade(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() data: CreateStrategyTradeDto,
+  ): Promise<StrategyTrade> {
+    return this.strategyService.createTrade(id, data);
+  }
+
+  @Public()
+  @Get(':id/trade')
+  @ApiOkResponse({ type: StrategyTradeEntity, isArray: true })
+  findTradeByStrategyId(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<StrategyTrade[]> {
+    return this.strategyService.findTradeByStrategyId(id);
   }
 }

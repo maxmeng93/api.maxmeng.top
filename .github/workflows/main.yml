@@ -4,11 +4,6 @@ on:
   push:
     branches:
       - main
-      - master
-  pull_request:
-    branches:
-      - main
-      - master
 
 jobs:
   deploy:
@@ -31,5 +26,6 @@ jobs:
           git pull
           pnpm install
           pnpm run build
-          pm2 restart etf
+          pnpm run prisma:deploy
+          pm2 restart api
           EOF
