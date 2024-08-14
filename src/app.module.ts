@@ -3,10 +3,12 @@ import { ConfigModule } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersModule } from './modules/user/user.module';
-import { AuthModule } from './modules/auth/auth.module';
-import { StrategyModule } from './modules/strategy/strategy.module';
-import { PrismaModule } from './modules/prisma/prisma.module';
+import {
+  UserModule,
+  AuthModule,
+  StrategyModule,
+  PrismaModule,
+} from './modules';
 
 @Module({
   imports: [
@@ -32,7 +34,7 @@ import { PrismaModule } from './modules/prisma/prisma.module';
       },
     }),
     PrismaModule,
-    UsersModule,
+    UserModule,
     AuthModule,
     StrategyModule,
   ],

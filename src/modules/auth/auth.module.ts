@@ -3,7 +3,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { PrismaModule } from '../prisma/prisma.module';
 import { AuthService } from './auth.service';
-import { UsersModule } from '../user/user.module';
+import { UserModule } from '../user/user.module';
 import { PassportModule } from '@nestjs/passport';
 import { AuthController } from './auth.controller';
 import { jwtConstants } from 'src/constants';
@@ -12,7 +12,7 @@ import { JwtAuthGuard, JwtStrategy, LocalStrategy } from 'src/guards';
 @Module({
   imports: [
     PrismaModule,
-    UsersModule,
+    UserModule,
     PassportModule,
     JwtModule.register({
       secret: jwtConstants.secret,
