@@ -4,10 +4,10 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
-import { jwtConstants, IS_PUBLIC_KEY } from './constants';
-import { Request } from 'express';
+import { jwtConstants, IS_PUBLIC_KEY } from 'src/constants';
 
 /**
  *

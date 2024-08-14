@@ -21,8 +21,7 @@ import { CreateStrategyDto } from './dto/create-strategy.dto';
 import { CreateStrategyTradeDto } from './dto/create-strategy-trade.dto';
 import { StrategyEntity } from './entity/strategy.entity';
 import { StrategyTradeEntity } from './entity/strategy-trade.entity';
-
-import { Public } from '../auth/constants';
+import { Public } from 'src/constants';
 
 @Controller('strategiy')
 @ApiTags('strategiy')
@@ -79,6 +78,7 @@ export class StrategyController {
     return this.strategyService.createTrade(id, data);
   }
 
+  // TODO: 公开接口
   @Public()
   @Get(':id/trade')
   @ApiOkResponse({ type: StrategyTradeEntity, isArray: true })

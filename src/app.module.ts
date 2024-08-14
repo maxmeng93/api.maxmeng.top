@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 import { UsersModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { StrategyModule } from './modules/strategy/strategy.module';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { PrismaModule } from './modules/prisma/prisma.module';
 
 @Module({
@@ -27,7 +27,8 @@ import { PrismaModule } from './modules/prisma/prisma.module';
         },
       },
       defaults: {
-        from: `"ETF投资分析" <${process.env.EMAIL_USERNAME}>`,
+        // from: `"ETF投资分析" <${process.env.EMAIL_USERNAME}>`,
+        from: process.env.EMAIL_USERNAME,
       },
     }),
     PrismaModule,

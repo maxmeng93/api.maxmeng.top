@@ -2,7 +2,7 @@ import { Observable } from 'rxjs';
 import { Injectable, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
-import { IS_PUBLIC_KEY } from './constants';
+import { IS_PUBLIC_KEY } from 'src/constants';
 
 /**
  * jwt守卫，用于验证token，确定用户是否有权限访问接口

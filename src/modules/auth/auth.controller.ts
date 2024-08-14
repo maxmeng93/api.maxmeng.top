@@ -7,14 +7,14 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiBody } from '@nestjs/swagger';
-import { LocalAuthGuard } from './local-auth.guard';
+import { LocalAuthGuard } from 'src/guards';
 import { AuthService } from './auth.service';
 import {
   LoginDTO,
   RequestPasswordResetDto,
   ResetPasswordDto,
 } from './auth.dto';
-import { Public } from '../auth/constants';
+import { Public } from 'src/constants';
 
 @ApiTags('auth')
 @Controller('auth')

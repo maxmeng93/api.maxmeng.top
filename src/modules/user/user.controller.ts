@@ -3,7 +3,7 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateUserDTO } from './dto/users.dto';
 import { UserEntity } from './entity/users.entity';
 import { UserService } from './user.service';
-import { Public } from '../auth/constants';
+import { Public } from 'src/constants';
 
 @ApiTags('user')
 @Controller('user')

@@ -6,8 +6,8 @@ import {
   ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { AppModule } from './app.module';
-import { PrismaClientExceptionFilter } from './prisma-client-exception/prisma-client-exception.filter';
+import { AppModule } from 'src/app.module';
+import { PrismaClientExceptionFilter } from 'src/filters';
 
 async function bootstrap() {
   const logger = new Logger('bootstrap');
