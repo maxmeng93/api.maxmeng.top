@@ -52,10 +52,7 @@ export class AuthService {
     const payload: JwtPayload = {
       sub: user.id,
       username: user.username,
-      nickname: user.nickname,
       role: user.role,
-      email: user.email,
-      avatar: user.avatar,
     };
 
     return {
