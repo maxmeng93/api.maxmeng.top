@@ -1,5 +1,6 @@
 import { Observable } from 'rxjs';
 import { Injectable, ExecutionContext } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { IS_PUBLIC_KEY } from 'src/constants';
@@ -23,17 +24,40 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       context.getClass(),
     ]);
 
-    // // 如果是开发环境，直接返回true，不需要验证token
-    // // 但是会导致 @Request() req: Request 无法获取到用户信息
-    if (process.env.NODE_ENV === 'development') {
-      return true;
-    }
-
-    console.log('isPublic', isPublic);
     if (isPublic) {
       return true;
     }
 
+    // 如果是开发环境，根据环境变量决定是否验证token
+    // 但是会导致 @Request() req: Request 无法获取到用户信息
+    if (
+      process.env.NODE_ENV === 'development' &&
+      process.env.SKIP_JWT_AUTH === 'true'
+    ) {
+      return true;
+    }
+
     return super.canActivate(context);
+
+    // 增加自定义校验逻辑
+    // 例如：根据用户 ID 查询用户信息，判断用户是否被禁用
+    // return super.canActivate(context).pipe(
+    //   switchMap((isAuthenticated) => {
+    //     if (!isAuthenticated) {
+    //       return throwError(() => new UnauthorizedError());
+    //     }
+
+    //     // 从 req 中获取用户 ID，根据用户 ID 查询用户信息
+    //     const userId = context.switchToHttp().getRequest().user.userId;
+    //     return this.userService.getUserById(userId).pipe(
+    //       switchMap((user) => {
+    //         if (!user || user.isDisabled) {
+    //           return throwError(() => new UnauthorizedError());
+    //         }
+    //         return true;
+    //       }),
+    //     );
+    //   }),
+    // );
   }
 }

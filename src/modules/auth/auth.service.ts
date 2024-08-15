@@ -8,7 +8,11 @@ import { JwtService } from '@nestjs/jwt';
 import { MailerService } from '@nestjs-modules/mailer';
 import { UserService } from '../user/user.service';
 import { UserEntity } from '../user/entity/users.entity';
-import { RequestPasswordResetDto, ResetPasswordDto } from './auth.dto';
+import {
+  RequestPasswordResetDto,
+  ResetPasswordDto,
+  LoginDTO,
+} from './auth.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { encryptPassword } from 'src/utils';
 
@@ -35,10 +39,21 @@ export class AuthService {
     return user;
   }
 
-  async login(user: UserEntity) {
+  async login(data: LoginDTO) {
+    const user = await this.userService.findOneByName(data.username);
+
+    if (!user) {
+      throw new BadRequestException('用户名不存在');
+    }
+
+    if (!compareSync(data.password, user.password)) {
+      throw new BadRequestException('密码错误');
+    }
+
     const payload = { username: user.username, sub: user.id };
+
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: await this.jwtService.signAsync(payload),
     };
   }
 

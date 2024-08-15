@@ -1,13 +1,5 @@
-import {
-  Controller,
-  Post,
-  Get,
-  Body,
-  Request,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Post, Get, Body, Request } from '@nestjs/common';
 import { ApiTags, ApiBody } from '@nestjs/swagger';
-import { LocalAuthGuard } from 'src/guards';
 import { AuthService } from './auth.service';
 import {
   LoginDTO,
@@ -22,10 +14,9 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Public()
-  @UseGuards(LocalAuthGuard)
   @Post('login')
-  signIn(@Body() user: LoginDTO, @Request() req) {
-    return this.authService.login(req.user);
+  signIn(@Body() data: LoginDTO) {
+    return this.authService.login(data);
   }
 
   @Get('profile')
