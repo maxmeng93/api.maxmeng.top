@@ -20,15 +20,16 @@ enum UserRole {
 }
 
 model User {
-  id         String   @id @default(uuid())
-  username   String   @unique
-  nickname   String?  @default("")
+  id         String     @id @default(uuid())
+  username   String     @unique
+  nickname   String?    @default("")
   password   String
-  avatar     String?  @default("")
-  email      String   @unique
-  role       UserRole @default(USER)
-  createTime DateTime @default(now())
-  updateTime DateTime @default(now()) @updatedAt
+  avatar     String?    @default("")
+  email      String     @unique
+  role       UserRole   @default(USER)
+  createTime DateTime   @default(now())
+  updateTime DateTime   @default(now()) @updatedAt
+  strategies Strategy[]
 }
 
 // 网格策略
@@ -41,6 +42,7 @@ model Strategy {
   details   StrategyDetail[]
   trades    StrategyTrade[]
   userId    String
+  User      User             @relation(fields: [userId], references: [id])
 }
 
 // 网格策略级别

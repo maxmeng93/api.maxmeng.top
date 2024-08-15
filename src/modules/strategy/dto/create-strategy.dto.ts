@@ -14,10 +14,10 @@ export class CreateStrategyDto {
   @IsNotEmpty()
   etfCode: string;
 
-  @ApiProperty({ description: '用户' })
-  @IsString()
-  @IsNotEmpty()
-  userId: string;
+  // @ApiProperty({ description: '用户' })
+  // @IsString()
+  // @IsNotEmpty()
+  // userId: string;
 
   @ApiProperty({ description: '策略详情', type: [CreateStrategyDetailDto] })
   @IsArray()

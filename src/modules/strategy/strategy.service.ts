@@ -3,14 +3,23 @@ import { Strategy, StrategyTrade, Prisma } from '@prisma/client';
 import { CreateStrategyDto } from './dto/create-strategy.dto';
 import { CreateStrategyTradeDto } from './dto/create-strategy-trade.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class StrategyService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private userService: UserService,
+  ) {}
 
-  async create(data: CreateStrategyDto): Promise<Strategy> {
+  async create(userId: string, data: CreateStrategyDto): Promise<Strategy> {
+    const user = await this.userService.findOne(userId);
+
     const strategyData: Prisma.StrategyCreateInput = {
       ...data,
+      User: {
+        connect: { id: user.id },
+      },
       details: {
         create: data.details,
       },

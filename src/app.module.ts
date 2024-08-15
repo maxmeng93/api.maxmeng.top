@@ -29,8 +29,8 @@ import {
         },
       },
       defaults: {
-        // from: `"ETF投资分析" <${process.env.EMAIL_USERNAME}>`,
-        from: process.env.EMAIL_USERNAME,
+        from: `"etf.maxmeng.top" <${process.env.EMAIL_USERNAME}>`,
+        // from: process.env.EMAIL_USERNAME,
       },
     }),
     PrismaModule,

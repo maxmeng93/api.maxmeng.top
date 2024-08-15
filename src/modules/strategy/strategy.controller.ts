@@ -34,10 +34,7 @@ export class StrategyController {
     @Body() createStrategyDto: CreateStrategyDto,
     @Request() req,
   ): Promise<Strategy> {
-    return this.strategyService.create({
-      ...createStrategyDto,
-      userId: req.user.userId,
-    });
+    return this.strategyService.create(req.user.userId, createStrategyDto);
   }
 
   @Get()
