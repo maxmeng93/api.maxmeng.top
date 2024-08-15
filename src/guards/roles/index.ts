@@ -13,11 +13,11 @@ export class RolesGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest();
-    const user = request.user;
-    return this.matchRoles(roles, user.roles);
+    const user: JwtPayload = request.user;
+    return this.matchRoles(roles, user.role);
   }
 
-  private matchRoles(roles: string[], userRoles: string[]): boolean {
-    return roles.some((role) => userRoles.includes(role));
+  private matchRoles(roles: string[], userRole: string): boolean {
+    return roles.includes(userRole);
   }
 }

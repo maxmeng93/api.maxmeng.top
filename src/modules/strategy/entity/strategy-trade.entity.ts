@@ -5,7 +5,7 @@ import { Transform } from 'class-transformer';
 export class StrategyTradeEntity implements StrategyTrade {
   id: number;
 
-  @ApiProperty({ description: '类型' })
+  @ApiProperty({ description: '类型', enum: TradeType, enumName: 'TradeType' })
   type: TradeType;
 
   @ApiProperty({ description: '价格' })

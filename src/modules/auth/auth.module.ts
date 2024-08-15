@@ -7,7 +7,12 @@ import { UserModule } from '../user/user.module';
 import { PassportModule } from '@nestjs/passport';
 import { AuthController } from './auth.controller';
 import { jwtConstants } from 'src/constants';
-import { JwtAuthGuard, JwtStrategy, LocalStrategy } from 'src/guards';
+import {
+  JwtAuthGuard,
+  JwtStrategy,
+  LocalStrategy,
+  RolesGuard,
+} from 'src/guards';
 
 @Module({
   imports: [
@@ -26,6 +31,7 @@ import { JwtAuthGuard, JwtStrategy, LocalStrategy } from 'src/guards';
     LocalStrategy,
     // 为所有接口添加jwt策略，只有调用@Public()装饰器的接口才不会添加jwt策略
     { provide: APP_GUARD, useClass: JwtAuthGuard },
+    { provide: APP_GUARD, useClass: RolesGuard },
   ],
   exports: [AuthService],
 })

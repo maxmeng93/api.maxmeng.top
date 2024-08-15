@@ -7,7 +7,6 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { MailerService } from '@nestjs-modules/mailer';
 import { UserService } from '../user/user.service';
-import { UserEntity } from '../user/entity/users.entity';
 import {
   RequestPasswordResetDto,
   ResetPasswordDto,
@@ -50,7 +49,14 @@ export class AuthService {
       throw new BadRequestException('密码错误');
     }
 
-    const payload = { username: user.username, sub: user.id };
+    const payload: JwtPayload = {
+      sub: user.id,
+      username: user.username,
+      nickname: user.nickname,
+      role: user.role,
+      email: user.email,
+      avatar: user.avatar,
+    };
 
     return {
       access_token: await this.jwtService.signAsync(payload),

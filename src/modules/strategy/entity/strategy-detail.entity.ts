@@ -9,7 +9,11 @@ export class StrategyDetailEntity implements StrategyDetail {
   @Transform(({ value }) => parseFloat(value))
   level: number;
 
-  @ApiProperty({ description: '类型' })
+  @ApiProperty({
+    description: '类型',
+    enum: StrategyType,
+    enumName: 'StrategyType',
+  })
   type: StrategyType;
 
   @ApiProperty({ description: '买入价' })

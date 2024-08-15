@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import { User, UserRole } from '@prisma/client';
 import { Exclude } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -23,6 +23,13 @@ export class UserEntity implements User {
 
   @ApiProperty({ description: '邮箱' })
   email: string;
+
+  @ApiProperty({
+    description: '角色',
+    enum: UserRole,
+    enumName: 'UserRole',
+  })
+  role: UserRole;
 
   @ApiProperty({ description: '创建日期' })
   createTime: Date;

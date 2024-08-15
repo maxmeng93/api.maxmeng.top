@@ -3,7 +3,7 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateUserDTO } from './dto/users.dto';
 import { UserEntity } from './entity/users.entity';
 import { UserService } from './user.service';
-import { Public } from 'src/constants';
+import { Public, OnlyMaxRole } from 'src/constants';
 
 @ApiTags('user')
 @Controller('user')
@@ -20,6 +20,7 @@ export class UserController {
 
   @ApiOperation({ summary: '查找所有用户' })
   @ApiResponse({ type: UserEntity, isArray: true })
+  @OnlyMaxRole()
   @Get('list')
   async findAll() {
     const users = await this.userService.findAll();
