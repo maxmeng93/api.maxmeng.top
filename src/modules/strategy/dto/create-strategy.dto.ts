@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsArray, ValidateNested } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsArray,
+  ValidateNested,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { CreateStrategyDetailDto } from './create-strategy-detail.dto';
 
@@ -11,13 +17,8 @@ export class CreateStrategyDto {
 
   @ApiProperty({ description: 'etf编码' })
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   etfCode: string;
-
-  // @ApiProperty({ description: '用户' })
-  // @IsString()
-  // @IsNotEmpty()
-  // userId: string;
 
   @ApiProperty({ description: '策略详情', type: [CreateStrategyDetailDto] })
   @IsArray()

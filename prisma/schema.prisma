@@ -36,8 +36,8 @@ model User {
 // 网格策略
 model Strategy {
   id        Int              @id @default(autoincrement())
-  name      String           @unique
-  etfCode   String
+  name      String
+  etfCode   String?
   createdAt DateTime         @default(now())
   updatedAt DateTime         @default(now()) @updatedAt
   details   StrategyDetail[]

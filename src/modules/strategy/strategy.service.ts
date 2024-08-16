@@ -31,9 +31,10 @@ export class StrategyService {
     });
   }
 
-  async findAll(): Promise<Strategy[]> {
+  async findAll(userId: string): Promise<Strategy[]> {
     return this.prisma.strategy.findMany({
       include: { details: true },
+      where: { User: { id: userId } },
     });
   }
 

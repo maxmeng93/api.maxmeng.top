@@ -40,8 +40,9 @@ export class StrategyController {
 
   @Get()
   @ApiOkResponse({ type: StrategyEntity, isArray: true })
-  findAll(): Promise<Strategy[]> {
-    return this.strategyService.findAll();
+  findAll(@Request() req): Promise<Strategy[]> {
+    const user: RequestUser = req.user;
+    return this.strategyService.findAll(user.userId);
   }
 
   @Get(':id')
