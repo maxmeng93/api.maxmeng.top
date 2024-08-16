@@ -19,6 +19,7 @@ enum UserRole {
   MAX
 }
 
+// 用户
 model User {
   id         String     @id @default(uuid())
   username   String     @unique
@@ -83,4 +84,15 @@ model StrategyTrade {
   brokerage  Float
   strategyId Int
   strategy   Strategy  @relation(fields: [strategyId], references: [id])
+}
+
+// 文件
+model File {
+  id        Int      @id @default(autoincrement())
+  filename  String
+  path      String
+  mimetype  String
+  size      Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
