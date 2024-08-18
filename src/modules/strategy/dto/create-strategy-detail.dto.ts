@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsInt, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsNumber,
+  IsInt,
+  IsNotEmpty,
+  IsString,
+  IsOptional,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { StrategyType } from '@prisma/client';
 
@@ -56,8 +62,10 @@ export class CreateStrategyDetailDto {
 
 export class UpdateStrategyDetailDto extends CreateStrategyDetailDto {
   @ApiProperty({ description: 'id' })
-  id: number;
+  @IsOptional()
+  id?: number;
 
   @ApiProperty({ description: '策略id' })
-  strategyId: number;
+  @IsOptional()
+  strategyId?: number;
 }

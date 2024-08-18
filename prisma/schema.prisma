@@ -81,7 +81,8 @@ model StrategyTrade {
   price      Float
   quantity   Int
   amount     Float
-  brokerage  Float
+  brokerage  Float     @default(0)
+  tradeDate  DateTime?
   strategyId Int
   strategy   Strategy  @relation(fields: [strategyId], references: [id])
 }

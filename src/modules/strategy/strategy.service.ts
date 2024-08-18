@@ -53,47 +53,105 @@ export class StrategyService {
   }
 
   async update(id: number, data: UpdateStrategyDto): Promise<Strategy> {
-    const strategyData: Prisma.StrategyUpdateInput = {
-      ...data,
-      details: {
-        upsert: data.details?.map((detail) => ({
-          where: { id: detail.id ?? 0 },
-          update: {
-            type: detail.type,
-            level: detail.level,
-            buyPrice: detail.buyPrice,
-            buyQuantity: detail.buyQuantity,
-            buyAmount: detail.buyAmount,
-            sellPrice: detail.sellPrice,
-            sellQuantity: detail.sellQuantity,
-            sellAmount: detail.sellAmount,
-            strategyId: detail.strategyId,
-          },
-          create: {
-            type: detail.type,
-            level: detail.level,
-            buyPrice: detail.buyPrice,
-            buyQuantity: detail.buyQuantity,
-            buyAmount: detail.buyAmount,
-            sellPrice: detail.sellPrice,
-            sellQuantity: detail.sellQuantity,
-            sellAmount: detail.sellAmount,
-            strategyId: id,
-          },
-        })),
-      },
-    };
+    return this.prisma.$transaction(async (prisma) => {
+      // 先更新 Strategy 本身的数据
+      const updatedStrategy = await prisma.strategy.update({
+        where: { id: id },
+        data: {
+          name: data.name,
+          etfCode: data.etfCode,
+          updatedAt: new Date(),
+        },
+      });
 
-    return this.prisma.strategy.update({
-      where: { id },
-      data: strategyData,
-      include: { details: true },
+      if (data.details) {
+        const newDetails = data.details;
+
+        // 获取当前数据库中所有与该策略关联的details
+        const existingDetails = await prisma.strategyDetail.findMany({
+          where: { strategyId: id },
+        });
+
+        // 构建一个新的 Set 来保存传入的 detail IDs
+        const newDetailIds = new Set<number>();
+        newDetails.forEach((detail) => {
+          if (detail.id) {
+            newDetailIds.add(detail.id as number);
+          }
+        });
+
+        // 删除数据库中存在但不在新传入的details中的那些条目
+        for (const existingDetail of existingDetails) {
+          if (!newDetailIds.has(existingDetail.id)) {
+            await prisma.strategyDetail.delete({
+              where: { id: existingDetail.id },
+            });
+          }
+        }
+
+        for (const detail of newDetails) {
+          if (detail.id && detail.id > 0) {
+            // 如果 detail 中的 id 存在，则尝试更新
+            const existingDetail = await prisma.strategyDetail.findUnique({
+              where: { id: detail.id as number },
+            });
+
+            if (existingDetail) {
+              // 如果能找到对应的记录，执行更新
+              await prisma.strategyDetail.update({
+                where: { id: detail.id as number },
+                data: {
+                  type: detail.type,
+                  level: detail.level,
+                  buyPrice: detail.buyPrice,
+                  buyQuantity: detail.buyQuantity,
+                  buyAmount: detail.buyAmount,
+                  sellPrice: detail.sellPrice,
+                  sellQuantity: detail.sellQuantity,
+                  sellAmount: detail.sellAmount,
+                },
+              });
+            } else {
+              // 如果找不到记录，抛出异常或处理错误
+              throw new Error(`Detail with id ${detail.id} not found`);
+            }
+          } else {
+            // 如果 id 不存在，则创建新的 detail 记录
+            await prisma.strategyDetail.create({
+              data: {
+                type: detail.type,
+                level: detail.level,
+                buyPrice: detail.buyPrice,
+                buyQuantity: detail.buyQuantity,
+                buyAmount: detail.buyAmount,
+                sellPrice: detail.sellPrice,
+                sellQuantity: detail.sellQuantity,
+                sellAmount: detail.sellAmount,
+                strategyId: id,
+              },
+            });
+          }
+        }
+      }
+
+      // 查询并附加更新后的 details
+      const updatedDetails = await prisma.strategyDetail.findMany({
+        where: { strategyId: id },
+      });
+
+      return {
+        ...updatedStrategy,
+        details: updatedDetails,
+      };
     });
   }
 
   async remove(id: number): Promise<null> {
-    // 先删除关联的 StrategyDetail
     await this.prisma.strategyDetail.deleteMany({
+      where: { strategyId: id },
+    });
+
+    await this.prisma.strategyTrade.deleteMany({
       where: { strategyId: id },
     });
 
@@ -116,6 +174,12 @@ export class StrategyService {
   async findTradeByStrategyId(strategyId: number): Promise<StrategyTrade[]> {
     return this.prisma.strategyTrade.findMany({
       where: { strategyId: strategyId },
+    });
+  }
+
+  async removeTrade(id: number): Promise<StrategyTrade> {
+    return await this.prisma.strategyTrade.delete({
+      where: { id },
     });
   }
 }

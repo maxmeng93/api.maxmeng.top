@@ -86,4 +86,9 @@ export class StrategyController {
   ): Promise<StrategyTrade[]> {
     return this.strategyService.findTradeByStrategyId(id);
   }
+
+  @Delete('trade/:id')
+  removeTrade(@Param('id', ParseIntPipe) id: number): Promise<StrategyTrade> {
+    return this.strategyService.removeTrade(id);
+  }
 }

@@ -23,6 +23,10 @@ export class StrategyTradeEntity implements StrategyTrade {
   @Transform(({ value }) => parseFloat(value))
   brokerage;
 
+  // 成交日期
+  @ApiProperty({ description: '成交日期' })
+  tradeDate: Date;
+
   @ApiProperty({ description: '策略ID' })
   strategyId: number;
 }

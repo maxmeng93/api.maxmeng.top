@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString, IsInt, IsNotEmpty } from 'class-validator';
+import {
+  IsNumber,
+  IsString,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { TradeType } from '@prisma/client';
 
@@ -33,11 +39,10 @@ export class CreateStrategyTradeDto {
   @ApiProperty({ description: '佣金' })
   @IsNumber({ maxDecimalPlaces: 3 })
   @Type(() => Number)
-  @IsNotEmpty()
+  @IsOptional()
   brokerage: number;
 
-  // @ApiProperty({ description: '策略ID' })
-  // @IsInt()
-  // @IsNotEmpty()
-  // strategyId: number;
+  @ApiProperty({ description: '成交日期' })
+  @IsOptional()
+  tradeDate?: Date;
 }
