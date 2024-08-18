@@ -1,6 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Strategy, StrategyTrade, Prisma } from '@prisma/client';
-import { CreateStrategyDto } from './dto/create-strategy.dto';
+import {
+  CreateStrategyDto,
+  UpdateStrategyDto,
+} from './dto/create-strategy.dto';
 import { CreateStrategyTradeDto } from './dto/create-strategy-trade.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { UserService } from '../user/user.service';
@@ -49,12 +52,35 @@ export class StrategyService {
     return strategy;
   }
 
-  async update(id: number, data: CreateStrategyDto): Promise<Strategy> {
+  async update(id: number, data: UpdateStrategyDto): Promise<Strategy> {
     const strategyData: Prisma.StrategyUpdateInput = {
       ...data,
       details: {
-        deleteMany: {},
-        create: data.details,
+        upsert: data.details?.map((detail) => ({
+          where: { id: detail.id ?? 0 },
+          update: {
+            type: detail.type,
+            level: detail.level,
+            buyPrice: detail.buyPrice,
+            buyQuantity: detail.buyQuantity,
+            buyAmount: detail.buyAmount,
+            sellPrice: detail.sellPrice,
+            sellQuantity: detail.sellQuantity,
+            sellAmount: detail.sellAmount,
+            strategyId: detail.strategyId,
+          },
+          create: {
+            type: detail.type,
+            level: detail.level,
+            buyPrice: detail.buyPrice,
+            buyQuantity: detail.buyQuantity,
+            buyAmount: detail.buyAmount,
+            sellPrice: detail.sellPrice,
+            sellQuantity: detail.sellQuantity,
+            sellAmount: detail.sellAmount,
+            strategyId: id,
+          },
+        })),
       },
     };
 

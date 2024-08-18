@@ -7,7 +7,10 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { CreateStrategyDetailDto } from './create-strategy-detail.dto';
+import {
+  CreateStrategyDetailDto,
+  UpdateStrategyDetailDto,
+} from './create-strategy-detail.dto';
 
 export class CreateStrategyDto {
   @ApiProperty({ description: '策略名' })
@@ -25,4 +28,12 @@ export class CreateStrategyDto {
   @ValidateNested({ each: true })
   @Type(() => CreateStrategyDetailDto)
   details: CreateStrategyDetailDto[];
+}
+
+export class UpdateStrategyDto extends CreateStrategyDto {
+  @ApiProperty({ description: '策略详情', type: [UpdateStrategyDetailDto] })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => UpdateStrategyDetailDto)
+  details: UpdateStrategyDetailDto[];
 }

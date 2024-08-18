@@ -17,7 +17,10 @@ import {
 } from '@nestjs/swagger';
 import { StrategyService } from './strategy.service';
 import { Strategy, StrategyTrade } from '@prisma/client';
-import { CreateStrategyDto } from './dto/create-strategy.dto';
+import {
+  CreateStrategyDto,
+  UpdateStrategyDto,
+} from './dto/create-strategy.dto';
 import { CreateStrategyTradeDto } from './dto/create-strategy-trade.dto';
 import { StrategyEntity } from './entity/strategy.entity';
 import { StrategyTradeEntity } from './entity/strategy-trade.entity';
@@ -56,7 +59,7 @@ export class StrategyController {
   @ApiOkResponse({ type: StrategyEntity })
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateStrategyDto: CreateStrategyDto,
+    @Body() updateStrategyDto: UpdateStrategyDto,
   ): Promise<Strategy> {
     return this.strategyService.update(id, updateStrategyDto);
   }

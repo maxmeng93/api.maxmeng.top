@@ -53,3 +53,11 @@ export class CreateStrategyDetailDto {
   @IsNotEmpty()
   sellAmount: number;
 }
+
+export class UpdateStrategyDetailDto extends CreateStrategyDetailDto {
+  @ApiProperty({ description: 'id' })
+  id: number;
+
+  @ApiProperty({ description: '策略id' })
+  strategyId: number;
+}
