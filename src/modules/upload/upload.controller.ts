@@ -68,7 +68,8 @@ export class UploadController {
       return res.status(404).send('File not found');
     }
 
-    const fileStream = this.uploadService.getFileStream(file.path);
+    const filePath = path.join(process.env.UPLOAD_PATH, file.path);
+    const fileStream = this.uploadService.getFileStream(filePath);
     res.setHeader('Content-Type', file.mimetype);
     res.setHeader('Content-Disposition', `inline; filename="${file.filename}"`);
     fileStream.pipe(res);

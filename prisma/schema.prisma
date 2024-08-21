@@ -31,6 +31,7 @@ model User {
   createTime DateTime   @default(now())
   updateTime DateTime   @default(now()) @updatedAt
   strategies Strategy[]
+  Article    Article[]
 }
 
 // 网格策略
@@ -96,4 +97,18 @@ model File {
   size      Int
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
+}
+
+// 文章
+model Article {
+  id          String   @id @default(uuid())
+  title       String
+  content     String
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  authorId    String
+  author      User     @relation(fields: [authorId], references: [id])
+
+  @@index([authorId])
 }

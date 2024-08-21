@@ -11,11 +11,14 @@ export class UploadService {
   constructor(private prisma: PrismaService) {}
 
   async saveFile(file: Express.Multer.File) {
-    const { filename, path, mimetype, size } = file;
+    const { filename, path: url, mimetype, size } = file;
+
+    const filePath = url.replace(process.env.UPLOAD_PATH, '');
+
     return this.prisma.file.create({
       data: {
         filename,
-        path,
+        path: filePath,
         mimetype,
         size,
       },
@@ -32,7 +35,7 @@ export class UploadService {
       throw new Error('Only Markdown files can be updated');
     }
 
-    const filePath = path.join(process.cwd(), file.path);
+    const filePath = path.join(process.env.UPLOAD_PATH, file.path);
     await writeFileAsync(filePath, content, 'utf8');
 
     return this.prisma.file.update({
