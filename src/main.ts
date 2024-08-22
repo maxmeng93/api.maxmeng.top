@@ -31,14 +31,21 @@ async function bootstrap() {
   // app.setGlobalPrefix('api');
 
   const config = new DocumentBuilder()
-    .setTitle('api example')
-    .setDescription('The cats API description')
+    .setTitle('API MAXMENG TOP')
+    .setDescription('接口文档')
     .setVersion('1.0')
     .addBearerAuth({ in: 'header', type: 'http' }, 'token')
     .addSecurityRequirements('token')
     .build();
+
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('swagger', app, document);
+  SwaggerModule.setup('swagger', app, document, {
+    jsonDocumentUrl: 'swagger/json',
+    swaggerOptions: {
+      persistAuthorization: true,
+      exportButton: true,
+    },
+  });
 
   const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));

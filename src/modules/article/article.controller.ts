@@ -2,30 +2,36 @@ import {
   Controller,
   Get,
   Post,
+  Put,
   Body,
-  Patch,
   Param,
   Delete,
+  Request,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { UserRole } from '@prisma/client';
 import { ArticleService } from './article.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { OnlyMaxRole } from 'src/constants';
 
-@ApiTags('articles')
-@Controller('articles')
+@ApiTags('article')
+@Controller('article')
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
 
+  @OnlyMaxRole()
   @Post()
-  create(@Body() createArticleDto: CreateArticleDto) {
-    const userId = '1'; // 模拟用户ID，实际应用中应从身份验证中获取
-    return this.articleService.create(createArticleDto, userId);
+  create(@Body() createArticleDto: CreateArticleDto, @Request() req) {
+    const user: RequestUser = req.user;
+    return this.articleService.create(createArticleDto, user.userId);
   }
 
   @Get()
-  findAll() {
-    return this.articleService.findAll();
+  findAll(@Request() req) {
+    const role: UserRole = req.role;
+    const isMax = role === UserRole.MAX;
+    return this.articleService.findAll(isMax);
   }
 
   @Get(':id')
@@ -33,11 +39,13 @@ export class ArticleController {
     return this.articleService.findOne(id);
   }
 
-  @Patch(':id')
+  @OnlyMaxRole()
+  @Put(':id')
   update(@Param('id') id: string, @Body() updateArticleDto: UpdateArticleDto) {
     return this.articleService.update(id, updateArticleDto);
   }
 
+  @OnlyMaxRole()
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.articleService.remove(id);

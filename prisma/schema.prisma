@@ -31,7 +31,7 @@ model User {
   createTime DateTime   @default(now())
   updateTime DateTime   @default(now()) @updatedAt
   strategies Strategy[]
-  Article    Article[]
+  articles   Article[]
 }
 
 // 网格策略

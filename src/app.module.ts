@@ -9,6 +9,7 @@ import {
   StrategyModule,
   PrismaModule,
   UploadModule,
+  ArticleModule,
 } from './modules';
 
 @Module({
@@ -39,6 +40,7 @@ import {
     AuthModule,
     StrategyModule,
     UploadModule,
+    ArticleModule,
   ],
   controllers: [AppController],
   providers: [AppService],

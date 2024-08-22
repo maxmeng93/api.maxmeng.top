@@ -16,10 +16,10 @@ export class ArticleService {
     });
   }
 
-  findAll() {
+  findAll(isMax: boolean) {
     return this.prisma.article.findMany({
-      include: {
-        author: true,
+      where: {
+        isPublished: !isMax,
       },
     });
   }
@@ -27,16 +27,16 @@ export class ArticleService {
   findOne(id: string) {
     return this.prisma.article.findUnique({
       where: { id },
-      include: {
-        author: true,
-      },
     });
   }
 
   update(id: string, updateArticleDto: UpdateArticleDto) {
     return this.prisma.article.update({
       where: { id },
-      data: updateArticleDto,
+      data: {
+        ...updateArticleDto,
+        updatedAt: new Date(),
+      },
     });
   }
 
