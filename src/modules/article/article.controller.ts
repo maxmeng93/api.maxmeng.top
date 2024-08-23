@@ -14,7 +14,7 @@ import {
   ApiTags,
   ApiBody,
 } from '@nestjs/swagger';
-import { UserRole, Article } from '@prisma/client';
+import { Article } from '@prisma/client';
 import { ArticleEntity } from './entity/article.entity';
 import { ArticleService } from './article.service';
 import { CreateArticleDto } from './dto/create-article.dto';
@@ -39,12 +39,17 @@ export class ArticleController {
   }
 
   @Public()
+  @Get('/published')
+  @ApiOkResponse({ type: ArticleEntity, isArray: true })
+  findPublish(): Promise<Article[]> {
+    return this.articleService.findAll(true);
+  }
+
+  @OnlyMaxRole()
   @Get()
   @ApiOkResponse({ type: ArticleEntity, isArray: true })
-  findAll(@Request() req): Promise<Article[]> {
-    const role: UserRole = req.role;
-    const isMax = role === UserRole.MAX;
-    return this.articleService.findAll(isMax);
+  findAll(): Promise<Article[]> {
+    return this.articleService.findAll();
   }
 
   @Public()

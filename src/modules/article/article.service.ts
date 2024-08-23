@@ -17,12 +17,9 @@ export class ArticleService {
     });
   }
 
-  findAll(isMax: boolean): Promise<Article[]> {
-    return this.prisma.article.findMany({
-      where: {
-        isPublished: !isMax,
-      },
-    });
+  findAll(isPublished?: boolean): Promise<Article[]> {
+    const where = isPublished ? { where: { isPublished: true } } : undefined;
+    return this.prisma.article.findMany(where);
   }
 
   findOne(id: string): Promise<Article | null> {
