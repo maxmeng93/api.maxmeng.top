@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Article } from '@prisma/client';
+import { Article, Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
@@ -8,7 +8,10 @@ import { UpdateArticleDto } from './dto/update-article.dto';
 export class ArticleService {
   constructor(private prisma: PrismaService) {}
 
-  create(createArticleDto: CreateArticleDto, userId: string): Promise<Article> {
+  async create(
+    createArticleDto: CreateArticleDto,
+    userId: string,
+  ): Promise<Article> {
     return this.prisma.article.create({
       data: {
         ...createArticleDto,
@@ -17,18 +20,35 @@ export class ArticleService {
     });
   }
 
-  findAll(isPublished?: boolean): Promise<Article[]> {
-    const where = isPublished ? { where: { isPublished: true } } : undefined;
-    return this.prisma.article.findMany(where);
+  async findAll(params: {
+    skip?: number;
+    take?: number;
+    where?: Prisma.ArticleWhereInput;
+  }): Promise<{ list: Article[]; total: number }> {
+    const { skip, take, where } = params;
+
+    const [articles, total] = await Promise.all([
+      this.prisma.article.findMany({
+        skip,
+        take,
+        where,
+      }),
+      this.prisma.article.count({ where: where }),
+    ]);
+
+    return { list: articles, total };
   }
 
-  findOne(id: string): Promise<Article | null> {
+  async findOne(id: string): Promise<Article | null> {
     return this.prisma.article.findUnique({
       where: { id },
     });
   }
 
-  update(id: string, updateArticleDto: UpdateArticleDto): Promise<Article> {
+  async update(
+    id: string,
+    updateArticleDto: UpdateArticleDto,
+  ): Promise<Article> {
     return this.prisma.article.update({
       where: { id },
       data: {
@@ -38,7 +58,7 @@ export class ArticleService {
     });
   }
 
-  changePublish(id: string, isPublished: boolean): Promise<Article> {
+  async changePublish(id: string, isPublished: boolean): Promise<Article> {
     return this.prisma.article.update({
       where: { id },
       data: {
@@ -48,7 +68,7 @@ export class ArticleService {
     });
   }
 
-  remove(id: string): Promise<Article> {
+  async remove(id: string): Promise<Article> {
     return this.prisma.article.delete({
       where: { id },
     });

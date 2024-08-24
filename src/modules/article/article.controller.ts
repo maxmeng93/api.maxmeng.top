@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Request,
+  Query,
 } from '@nestjs/common';
 import {
   ApiCreatedResponse,
@@ -15,7 +16,7 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 import { Article } from '@prisma/client';
-import { ArticleEntity } from './entity/article.entity';
+import { ArticleEntity, ArticlePreviewEntity } from './entity/article.entity';
 import { ArticleService } from './article.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto, UpdatePublishDto } from './dto/update-article.dto';
@@ -30,7 +31,7 @@ export class ArticleController {
   @Post()
   @ApiBody({ type: CreateArticleDto })
   @ApiCreatedResponse({ type: ArticleEntity })
-  create(
+  async create(
     @Body() createArticleDto: CreateArticleDto,
     @Request() req,
   ): Promise<Article> {
@@ -40,22 +41,55 @@ export class ArticleController {
 
   @Public()
   @Get('/published')
-  @ApiOkResponse({ type: ArticleEntity, isArray: true })
-  findPublish(): Promise<Article[]> {
-    return this.articleService.findAll(true);
+  @ApiOkResponse({ type: ArticlePreviewEntity, isArray: true })
+  async findPublish(
+    @Query('page') page = '1',
+    @Query('pageSize') pageSize = '10',
+  ): Promise<PageData<ArticlePreviewEntity>> {
+    const pageNum = parseInt(page, 10);
+    const pageSizeNum = parseInt(pageSize, 10);
+
+    const { list, total } = await this.articleService.findAll({
+      skip: (pageNum - 1) * pageSizeNum,
+      take: pageSizeNum,
+      where: { isPublished: true },
+    });
+
+    return {
+      list: list.map((item) => new ArticlePreviewEntity(item)),
+      total,
+      page: pageNum,
+      pageSize: pageSizeNum,
+    };
   }
 
   @OnlyMaxRole()
   @Get()
-  @ApiOkResponse({ type: ArticleEntity, isArray: true })
-  findAll(): Promise<Article[]> {
-    return this.articleService.findAll();
+  @ApiOkResponse({ type: ArticlePreviewEntity, isArray: true })
+  async findAll(
+    @Query('page') page = '1',
+    @Query('pageSize') pageSize = '10',
+  ): Promise<PageData<ArticlePreviewEntity>> {
+    const pageNum = parseInt(page, 10);
+    const pageSizeNum = parseInt(pageSize, 10);
+
+    const { list, total } = await this.articleService.findAll({
+      skip: (pageNum - 1) * pageSizeNum,
+      take: pageSizeNum,
+    });
+
+    return {
+      list: list.map((item) => new ArticlePreviewEntity(item)),
+      total,
+      page: pageNum,
+      pageSize: pageSizeNum,
+    };
   }
 
   @Public()
   @Get(':id')
   @ApiOkResponse({ type: ArticleEntity })
-  findOne(@Param('id') id: string): Promise<Article | null> {
+  async findOne(@Param('id') id: string): Promise<Article | null> {
     return this.articleService.findOne(id);
   }
 
@@ -63,7 +97,7 @@ export class ArticleController {
   @Post(':id')
   @ApiBody({ type: UpdateArticleDto })
   @ApiOkResponse({ type: ArticleEntity })
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateArticleDto: UpdateArticleDto,
   ): Promise<Article> {
@@ -74,7 +108,7 @@ export class ArticleController {
   @Put(':id')
   @ApiBody({ type: UpdatePublishDto })
   @ApiOkResponse({ type: ArticleEntity })
-  changePublish(
+  async changePublish(
     @Param('id') id: string,
     @Body() data: UpdatePublishDto,
   ): Promise<Article> {
@@ -84,7 +118,7 @@ export class ArticleController {
   @OnlyMaxRole()
   @Delete(':id')
   @ApiOkResponse({ type: ArticleEntity })
-  remove(@Param('id') id: string): Promise<Article> {
+  async remove(@Param('id') id: string): Promise<Article> {
     return this.articleService.remove(id);
   }
 }

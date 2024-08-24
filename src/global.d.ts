@@ -13,3 +13,19 @@ interface JwtPayload {
 interface RequestUser extends Omit<JwtPayload, 'sub'> {
   userId: string;
 }
+
+/**
+ * 分页参数
+ */
+interface Pagination {
+  page: number;
+  pageSize: number;
+  total: number;
+}
+
+/**
+ * 分页数据
+ */
+interface PageData<T> extends Pagination {
+  list: T[];
+}

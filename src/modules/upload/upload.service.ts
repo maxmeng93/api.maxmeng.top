@@ -47,6 +47,10 @@ export class UploadService {
     });
   }
 
+  async getAllFiles() {
+    return this.prisma.file.findMany();
+  }
+
   async getFile(id: number) {
     return this.prisma.file.findUnique({ where: { id } });
   }
