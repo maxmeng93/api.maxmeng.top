@@ -25,7 +25,8 @@ jobs:
           git checkout -- .
           git pull
           pnpm install
-          pnpm run build
           pnpm run prisma:deploy
+          pnpm run prisma:gen
+          pnpm run build
           pm2 restart api
           EOF
