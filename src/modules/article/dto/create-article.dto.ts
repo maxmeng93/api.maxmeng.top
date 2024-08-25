@@ -1,4 +1,4 @@
-import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsString, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateArticleDto {
@@ -12,10 +12,10 @@ export class CreateArticleDto {
   @IsNotEmpty()
   content: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsString()
-  @IsNotEmpty()
-  preview: string;
+  @IsOptional()
+  summary?: string;
 
   @ApiProperty({ default: false })
   @IsBoolean()

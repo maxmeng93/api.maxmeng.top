@@ -1,10 +1,11 @@
 import * as path from 'path';
-import { createReadStream, writeFile } from 'fs';
+import { writeFile, unlink } from 'fs';
 import { promisify } from 'util';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
 const writeFileAsync = promisify(writeFile);
+const unlinkAsync = promisify(unlink);
 
 @Injectable()
 export class UploadService {
@@ -47,15 +48,39 @@ export class UploadService {
     });
   }
 
-  async getAllFiles() {
-    return this.prisma.file.findMany();
+  async getAllFiles(params: { skip?: number; take?: number }) {
+    const { skip, take } = params;
+
+    const [list, total] = await Promise.all([
+      this.prisma.file.findMany({
+        skip,
+        take,
+        orderBy: { updatedAt: 'desc' },
+      }),
+      this.prisma.file.count(),
+    ]);
+
+    return { list, total };
   }
 
   async getFile(id: number) {
     return this.prisma.file.findUnique({ where: { id } });
   }
 
-  getFileStream(filePath: string) {
-    return createReadStream(filePath);
+  async deleteFile(id: number) {
+    const file = await this.prisma.file.findUnique({ where: { id } });
+    if (!file) {
+      throw new NotFoundException(`没有找到id为${id}的文件`);
+    }
+
+    const filePath = path.join(process.env.UPLOAD_PATH, file.path);
+
+    try {
+      await unlinkAsync(filePath);
+    } catch (error) {
+      console.error(`Error deleting file from filesystem: ${error.message}`);
+    }
+
+    return this.prisma.file.delete({ where: { id } });
   }
 }

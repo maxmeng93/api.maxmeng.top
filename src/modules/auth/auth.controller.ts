@@ -1,5 +1,5 @@
 import { Controller, Post, Get, Body, Request } from '@nestjs/common';
-import { ApiTags, ApiBody } from '@nestjs/swagger';
+import { ApiOperation, ApiTags, ApiBody } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import {
   LoginDTO,
@@ -13,17 +13,20 @@ import { Public } from 'src/constants';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @ApiOperation({ summary: '登录' })
   @Public()
   @Post('login')
   signIn(@Body() data: LoginDTO) {
     return this.authService.login(data);
   }
 
+  @ApiOperation({ summary: '获取用户信息' })
   @Get('profile')
   getProfile(@Request() req) {
     return req.user;
   }
 
+  @ApiOperation({ summary: '请求重置密码' })
   @Public()
   @Post('request-password-reset')
   @ApiBody({ type: RequestPasswordResetDto })
@@ -31,6 +34,7 @@ export class AuthController {
     return this.authService.requestPasswordReset(dto);
   }
 
+  @ApiOperation({ summary: '重置密码' })
   @Public()
   @Post('reset-password')
   @ApiBody({ type: ResetPasswordDto })

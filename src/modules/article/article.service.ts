@@ -27,7 +27,7 @@ export class ArticleService {
   }): Promise<{ list: Article[]; total: number }> {
     const { skip, take, where } = params;
 
-    const [articles, total] = await Promise.all([
+    const [list, total] = await Promise.all([
       this.prisma.article.findMany({
         skip,
         take,
@@ -36,7 +36,7 @@ export class ArticleService {
       this.prisma.article.count({ where: where }),
     ]);
 
-    return { list: articles, total };
+    return { list, total };
   }
 
   async findOne(id: string): Promise<Article | null> {

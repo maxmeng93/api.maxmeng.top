@@ -12,8 +12,8 @@ export class ArticleEntity implements Article {
   @ApiProperty({ description: '内容' })
   content: string;
 
-  @ApiProperty({ description: '预览' })
-  preview: string;
+  @ApiProperty({ description: '文章摘要' })
+  summary: string;
 
   @ApiProperty({ description: '是否发布' })
   isPublished: boolean;
@@ -28,7 +28,7 @@ export class ArticleEntity implements Article {
   updatedAt: Date;
 }
 
-export class ArticlePreviewEntity implements Article {
+export class ArticleSummaryEntity implements Article {
   constructor(partial: Partial<ArticleEntity>) {
     Object.assign(this, partial);
   }
@@ -43,8 +43,8 @@ export class ArticlePreviewEntity implements Article {
   @ApiProperty({ description: '内容' })
   content: string;
 
-  @ApiProperty({ description: '预览' })
-  preview: string;
+  @ApiProperty({ description: '文章摘要' })
+  summary: string;
 
   @ApiProperty({ description: '是否发布' })
   isPublished: boolean;
