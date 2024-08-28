@@ -32,6 +32,7 @@ export class ArticleService {
         skip,
         take,
         where,
+        orderBy: { createdAt: 'desc' },
       }),
       this.prisma.article.count({ where: where }),
     ]);
