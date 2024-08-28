@@ -25,7 +25,7 @@ async function bootstrap() {
   // 设置静态文件服务
   app.useStaticAssets(join(__dirname, '..', '..', 'uploads'), {
     prefix: '/uploads/',
-    maxAge: 86400000, // 缓存1天
+    maxAge: 30 * 24 * 60 * 60 * 1000, // 缓存30天
     immutable: false,
     etag: true,
     lastModified: true,
