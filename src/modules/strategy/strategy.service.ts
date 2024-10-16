@@ -182,4 +182,14 @@ export class StrategyService {
       where: { id },
     });
   }
+
+  async updateTrade(
+    id: number,
+    data: CreateStrategyTradeDto,
+  ): Promise<StrategyTrade> {
+    return await this.prisma.strategyTrade.update({
+      where: { id },
+      data: { ...data },
+    });
+  }
 }

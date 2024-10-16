@@ -100,4 +100,15 @@ export class StrategyController {
   removeTrade(@Param('id', ParseIntPipe) id: number): Promise<StrategyTrade> {
     return this.strategyService.removeTrade(id);
   }
+
+  @ApiOperation({ summary: '修改网格策略交易' })
+  @Put('trade/:id')
+  @ApiBody({ type: CreateStrategyTradeDto })
+  @ApiOkResponse({ type: StrategyTradeEntity })
+  updateTrade(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() data: CreateStrategyTradeDto,
+  ): Promise<StrategyTrade> {
+    return this.strategyService.updateTrade(id, data);
+  }
 }
