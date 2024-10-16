@@ -106,10 +106,17 @@ model Article {
   content     String   @db.LongText
   summary     String?  @db.Text
   isPublished Boolean  @default(false)
+  tags        Tag[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   authorId    String
   author      User     @relation(fields: [authorId], references: [id])
 
   @@index([authorId])
+}
+
+model Tag {
+  id       Int       @id @default(autoincrement())
+  name     String
+  articles Article[]
 }
