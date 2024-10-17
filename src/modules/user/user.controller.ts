@@ -22,9 +22,19 @@ export class UserController {
   @ApiResponse({ type: UserEntity, isArray: true })
   @OnlyMaxRole()
   @Get('list')
-  async findAll() {
-    const users = await this.userService.findAll();
-    return users.map((user) => new UserEntity(user));
+  async findAll(@Query('page') page = '1', @Query('pageSize') pageSize = '10') {
+    const pageNum = parseInt(page, 10);
+    const pageSizeNum = parseInt(pageSize, 10);
+    const { list, total } = await this.userService.findAll({
+      skip: (pageNum - 1) * pageSizeNum,
+      take: pageSizeNum,
+    });
+    return {
+      list: list.map((user) => new UserEntity(user)),
+      total,
+      page: pageNum,
+      pageSize: pageSizeNum,
+    };
   }
 
   @ApiOperation({ summary: '根据用户名查找用户' })
