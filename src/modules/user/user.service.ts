@@ -26,8 +26,21 @@ export class UserService {
     });
   }
 
-  async findAll(): Promise<User[]> {
-    return this.prisma.user.findMany();
+  async findAll(params: {
+    skip: number;
+    take: number;
+  }): Promise<{ list: User[]; total: number }> {
+    const [list, total] = await Promise.all([
+      this.prisma.user.findMany({
+        skip: params.skip,
+        take: params.take,
+        orderBy: {
+          createTime: 'desc',
+        },
+      }),
+      this.prisma.user.count(),
+    ]);
+    return { list, total };
   }
 
   async findOne(id: string): Promise<User> {
