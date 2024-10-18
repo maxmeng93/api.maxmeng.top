@@ -1,27 +1,26 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { Strategy, StrategyTrade, Prisma } from '@prisma/client';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
+import { Strategy, StrategyTrade, Prisma, UserRole } from '@prisma/client';
 import {
   CreateStrategyDto,
   UpdateStrategyDto,
 } from './dto/create-strategy.dto';
 import { CreateStrategyTradeDto } from './dto/create-strategy-trade.dto';
 import { PrismaService } from '../prisma/prisma.service';
-import { UserService } from '../user/user.service';
+import { UserEntity } from '../user/entity/users.entity';
 
 @Injectable()
 export class StrategyService {
-  constructor(
-    private prisma: PrismaService,
-    private userService: UserService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
-  async create(userId: string, data: CreateStrategyDto): Promise<Strategy> {
-    const user = await this.userService.findOne(userId);
-
+  async create(user: RequestUser, data: CreateStrategyDto): Promise<Strategy> {
     const strategyData: Prisma.StrategyCreateInput = {
       ...data,
       User: {
-        connect: { id: user.id },
+        connect: { id: user.userId },
       },
       details: {
         create: data.details,
@@ -34,25 +33,58 @@ export class StrategyService {
     });
   }
 
-  async findAll(userId: string): Promise<Strategy[]> {
+  // 获取当前用户的网格策略列表
+  async findMyGrids(user: RequestUser): Promise<Strategy[]> {
     return this.prisma.strategy.findMany({
       include: { details: true },
-      where: { User: { id: userId } },
+      where: { User: { id: user.userId } },
     });
   }
 
-  async findOne(id: number): Promise<Strategy> {
-    const strategy = await this.prisma.strategy.findUnique({
-      where: { id },
-      include: { details: true },
+  // 获取所有用户的网格策略
+  async findAllGrids(params: {
+    skip: number;
+    take: number;
+    where?: Prisma.StrategyWhereInput;
+  }): Promise<{ list: Strategy[]; total: number }> {
+    const [list, total] = await Promise.all([
+      this.prisma.strategy.findMany({
+        include: { details: true, User: true },
+        skip: params.skip,
+        take: params.take,
+        where: params.where,
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+      this.prisma.strategy.count({
+        where: params.where,
+      }),
+    ]);
+    const newList = list.map((item) => {
+      const { User, ...rest } = item;
+      return {
+        ...rest,
+        user: new UserEntity(User),
+      };
     });
+    return { list: newList, total };
+  }
+
+  async findOne(id: number, user: RequestUser): Promise<Strategy> {
+    const strategy = await this.ensureOwnership(id, user);
     if (!strategy) {
       throw new NotFoundException(`Strategy with ID ${id} not found`);
     }
     return strategy;
   }
 
-  async update(id: number, data: UpdateStrategyDto): Promise<Strategy> {
+  async update(
+    id: number,
+    data: UpdateStrategyDto,
+    user: RequestUser,
+  ): Promise<Strategy> {
+    await this.ensureOwnership(id, user);
     return this.prisma.$transaction(async (prisma) => {
       // 先更新 Strategy 本身的数据
       const updatedStrategy = await prisma.strategy.update({
@@ -146,7 +178,8 @@ export class StrategyService {
     });
   }
 
-  async remove(id: number): Promise<null> {
+  async remove(id: number, user: RequestUser): Promise<null> {
+    await this.ensureOwnership(id, user);
     await this.prisma.strategyDetail.deleteMany({
       where: { strategyId: id },
     });
@@ -165,19 +198,32 @@ export class StrategyService {
   async createTrade(
     strategyId: number,
     data: CreateStrategyTradeDto,
+    user: RequestUser,
   ): Promise<StrategyTrade> {
+    await this.ensureOwnership(strategyId, user);
     return await this.prisma.strategyTrade.create({
       data: { ...data, strategyId: strategyId },
     });
   }
 
-  async findTradeByStrategyId(strategyId: number): Promise<StrategyTrade[]> {
+  async findTradeByStrategyId(
+    strategyId: number,
+    user: RequestUser,
+  ): Promise<StrategyTrade[]> {
+    await this.ensureOwnership(strategyId, user);
     return this.prisma.strategyTrade.findMany({
       where: { strategyId: strategyId },
     });
   }
 
-  async removeTrade(id: number): Promise<StrategyTrade> {
+  async removeTrade(id: number, user: RequestUser): Promise<StrategyTrade> {
+    const trade = await this.prisma.strategyTrade.findUnique({
+      where: { id },
+    });
+    if (!trade) {
+      throw new NotFoundException('数据不存在');
+    }
+    await this.ensureOwnership(trade.strategyId, user);
     return await this.prisma.strategyTrade.delete({
       where: { id },
     });
@@ -186,10 +232,43 @@ export class StrategyService {
   async updateTrade(
     id: number,
     data: CreateStrategyTradeDto,
+    user: RequestUser,
   ): Promise<StrategyTrade> {
+    const trade = await this.prisma.strategyTrade.findUnique({
+      where: { id },
+    });
+    if (!trade) {
+      throw new NotFoundException('数据不存在');
+    }
+    await this.ensureOwnership(trade.strategyId, user);
     return await this.prisma.strategyTrade.update({
       where: { id },
       data: { ...data },
     });
+  }
+
+  // 确保用户有权操作策略
+  private async ensureOwnership(
+    strategyId: number,
+    user: RequestUser,
+  ): Promise<Strategy> {
+    const { userId, role } = user;
+    const strategy = await this.prisma.strategy.findUnique({
+      where: { id: strategyId },
+      include: { details: true },
+    });
+    if (!strategy) {
+      throw new NotFoundException('数据不存在');
+    }
+
+    if (strategy.userId === userId) {
+      return strategy;
+    }
+
+    if (role === UserRole.MAX) {
+      return strategy;
+    }
+
+    throw new ForbiddenException('权限不足');
   }
 }

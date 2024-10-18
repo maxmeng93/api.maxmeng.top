@@ -1,4 +1,11 @@
-import { Body, Controller, Post, Get, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  Get,
+  Query,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateUserDTO } from './dto/users.dto';
 import { UserEntity } from './entity/users.entity';
@@ -22,18 +29,24 @@ export class UserController {
   @ApiResponse({ type: UserEntity, isArray: true })
   @OnlyMaxRole()
   @Get('list')
-  async findAll(@Query('page') page = '1', @Query('pageSize') pageSize = '10') {
-    const pageNum = parseInt(page, 10);
-    const pageSizeNum = parseInt(pageSize, 10);
+  async findAll(
+    @Query('page', ParseIntPipe) page = 1,
+    @Query('pageSize', ParseIntPipe) pageSize = 10,
+  ): Promise<{
+    list: UserEntity[];
+    total: number;
+    page: number;
+    pageSize: number;
+  }> {
     const { list, total } = await this.userService.findAll({
-      skip: (pageNum - 1) * pageSizeNum,
-      take: pageSizeNum,
+      skip: (page - 1) * pageSize,
+      take: pageSize,
     });
     return {
       list: list.map((user) => new UserEntity(user)),
       total,
-      page: pageNum,
-      pageSize: pageSizeNum,
+      page: page,
+      pageSize: pageSize,
     };
   }
 
