@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { User } from '@prisma/client';
+import { User, Prisma } from '@prisma/client';
 import { CreateUserDTO } from './dto/users.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { encryptPassword } from 'src/utils';
@@ -29,16 +29,18 @@ export class UserService {
   async findAll(params: {
     skip: number;
     take: number;
+    where?: Prisma.UserWhereInput;
   }): Promise<{ list: User[]; total: number }> {
     const [list, total] = await Promise.all([
       this.prisma.user.findMany({
         skip: params.skip,
         take: params.take,
+        where: params.where,
         orderBy: {
           createTime: 'desc',
         },
       }),
-      this.prisma.user.count(),
+      this.prisma.user.count({ where: params.where }),
     ]);
     return { list, total };
   }
@@ -58,6 +60,12 @@ export class UserService {
   async remove(id: string): Promise<User> {
     return this.prisma.user.delete({
       where: { id },
+    });
+  }
+
+  async currentUserInfo(user: RequestUser): Promise<User> {
+    return this.prisma.user.findUnique({
+      where: { id: user.userId },
     });
   }
 }

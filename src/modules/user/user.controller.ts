@@ -5,6 +5,7 @@ import {
   Get,
   Query,
   ParseIntPipe,
+  Request,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateUserDTO } from './dto/users.dto';
@@ -32,6 +33,8 @@ export class UserController {
   async findAll(
     @Query('page', ParseIntPipe) page = 1,
     @Query('pageSize', ParseIntPipe) pageSize = 10,
+    @Query('username') username?: string,
+    @Query('email') email?: string,
   ): Promise<{
     list: UserEntity[];
     total: number;
@@ -41,6 +44,10 @@ export class UserController {
     const { list, total } = await this.userService.findAll({
       skip: (page - 1) * pageSize,
       take: pageSize,
+      where: {
+        username: { contains: username },
+        email: { contains: email },
+      },
     });
     return {
       list: list.map((user) => new UserEntity(user)),
@@ -52,8 +59,17 @@ export class UserController {
 
   @ApiOperation({ summary: '根据用户名查找用户' })
   @ApiResponse({ type: UserEntity })
+  @OnlyMaxRole()
   @Get('find')
   async findOne(@Query('username') username: string): Promise<UserEntity> {
     return new UserEntity(await this.userService.findOneByName(username));
+  }
+
+  @ApiOperation({ summary: '查询当前用户信息' })
+  @ApiResponse({ type: UserEntity })
+  @Get('info')
+  async currentUser(@Request() req): Promise<UserEntity> {
+    const user: RequestUser = req.user;
+    return new UserEntity(await this.userService.currentUserInfo(user));
   }
 }
