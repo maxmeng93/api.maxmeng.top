@@ -49,6 +49,12 @@ export class AuthService {
       throw new BadRequestException('密码错误');
     }
 
+    // 更新用户最后登录时间
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: { lastLoginTime: new Date() },
+    });
+
     const payload: JwtPayload = {
       sub: user.id,
       username: user.username,

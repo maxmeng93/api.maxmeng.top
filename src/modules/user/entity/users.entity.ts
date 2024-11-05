@@ -36,4 +36,7 @@ export class UserEntity implements User {
 
   @ApiProperty({ description: '更新日期' })
   updateTime: Date;
+
+  @ApiProperty({ description: '最后登录时间' })
+  lastLoginTime: Date;
 }

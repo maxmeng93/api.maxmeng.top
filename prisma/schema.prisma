@@ -21,17 +21,18 @@ enum UserRole {
 
 // 用户
 model User {
-  id         String     @id @default(uuid())
-  username   String     @unique
-  nickname   String?    @default("")
-  password   String
-  avatar     String?    @default("")
-  email      String     @unique
-  role       UserRole   @default(USER)
-  createTime DateTime   @default(now())
-  updateTime DateTime   @default(now()) @updatedAt
-  strategies Strategy[]
-  articles   Article[]
+  id            String     @id @default(uuid())
+  username      String     @unique
+  nickname      String?    @default("")
+  password      String
+  avatar        String?    @default("")
+  email         String     @unique
+  role          UserRole   @default(USER)
+  createTime    DateTime   @default(now())
+  updateTime    DateTime   @default(now()) @updatedAt
+  lastLoginTime DateTime?
+  strategies    Strategy[]
+  articles      Article[]
 }
 
 // 网格策略
