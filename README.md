@@ -4,34 +4,37 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-## Installation
+## 安装依赖
 
 ```bash
 $ pnpm install
 ```
 
-## Running the app
+## 开发
 
 ```bash
-# development
-$ pnpm run start
-
 # watch mode
 $ pnpm run start:dev
+```
 
-# production mode
+## 生产
+
+```bash
 $ pnpm run start:prod
 ```
 
-## Test
+## Prisma
+
+### 修改 schema.prisma 后
 
 ```bash
-# unit tests
-$ pnpm run test
+$ pnpm run prisma:migrate
+$ pnpm run prisma:gen
+```
 
-# e2e tests
-$ pnpm run test:e2e
+### 部署
 
-# test coverage
-$ pnpm run test:cov
+```bash
+$ pnpm run prisma:deploy
+$ pnpm run prisma:gen
 ```

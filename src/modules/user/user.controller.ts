@@ -26,7 +26,7 @@ export class UserController {
     return new UserEntity(await this.userService.register(createUser));
   }
 
-  @ApiOperation({ summary: '查找所有用户' })
+  @ApiOperation({ summary: '查找用户列表' })
   @ApiResponse({ type: UserEntity, isArray: true })
   @OnlyMaxRole()
   @Get('list')
@@ -35,18 +35,31 @@ export class UserController {
     @Query('pageSize', ParseIntPipe) pageSize = 10,
     @Query('username') username?: string,
     @Query('email') email?: string,
+    @Query('lastLoginTimeStart') lastLoginTimeStart?: Date,
+    @Query('lastLoginTimeEnd') lastLoginTimeEnd?: Date,
   ): Promise<{
     list: UserEntity[];
     total: number;
     page: number;
     pageSize: number;
   }> {
+    if (lastLoginTimeStart) {
+      lastLoginTimeStart.setHours(0, 0, 0, 0);
+    }
+    if (lastLoginTimeEnd) {
+      lastLoginTimeEnd.setHours(23, 59, 59, 999);
+    }
+
     const { list, total } = await this.userService.findAll({
       skip: (page - 1) * pageSize,
       take: pageSize,
       where: {
         username: { contains: username },
         email: { contains: email },
+        lastLoginTime: {
+          gte: lastLoginTimeStart,
+          lte: lastLoginTimeEnd,
+        },
       },
     });
     return {
