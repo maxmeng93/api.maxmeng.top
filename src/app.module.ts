@@ -10,6 +10,7 @@ import {
   PrismaModule,
   UploadModule,
   ArticleModule,
+  AkshareModule,
 } from './modules';
 
 @Module({
@@ -41,6 +42,7 @@ import {
     StrategyModule,
     UploadModule,
     ArticleModule,
+    AkshareModule,
   ],
   controllers: [AppController],
   providers: [AppService],

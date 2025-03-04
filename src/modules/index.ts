@@ -4,3 +4,4 @@ export { UserModule } from './user/user.module';
 export { PrismaModule } from './prisma/prisma.module';
 export { UploadModule } from './upload/upload.module';
 export { ArticleModule } from './article/article.module';
+export { AkshareModule } from './akshare/akshare.module';
