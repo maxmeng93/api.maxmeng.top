@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE `User` ADD COLUMN `emailFailCount` INTEGER NOT NULL DEFAULT 0,
+    ADD COLUMN `isEmailVerified` BOOLEAN NOT NULL DEFAULT false;
