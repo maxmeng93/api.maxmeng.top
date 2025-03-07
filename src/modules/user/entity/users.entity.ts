@@ -31,6 +31,12 @@ export class UserEntity implements User {
   })
   role: UserRole;
 
+  @ApiProperty({ description: '邮箱是否验证' })
+  isEmailVerified: boolean;
+
+  @ApiProperty({ description: '邮箱验证失败次数' })
+  emailFailCount: number;
+
   @ApiProperty({ description: '创建日期' })
   createTime: Date;
 

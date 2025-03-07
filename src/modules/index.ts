@@ -5,3 +5,4 @@ export { PrismaModule } from './prisma/prisma.module';
 export { UploadModule } from './upload/upload.module';
 export { ArticleModule } from './article/article.module';
 export { AkshareModule } from './akshare/akshare.module';
+export { MailModule } from './mail/mail.module';
