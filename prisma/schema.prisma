@@ -104,16 +104,19 @@ model File {
 
 // 文章
 model Article {
-  id          String   @id @default(uuid())
+  id          String    @id @default(uuid())
   title       String
-  content     String   @db.LongText
-  summary     String?  @db.Text
-  isPublished Boolean  @default(false)
-  tags        Tag[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  content     String    @db.LongText
+  summary     String?   @db.Text
+  originalUrl String?   @db.VarChar(512)
+  originalAt  DateTime?
+  isPublished Boolean   @default(false)
+  tags        Tag[]     @relation("ArticleToTag")
+  images      Json?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
   authorId    String
-  author      User     @relation(fields: [authorId], references: [id])
+  author      User      @relation(fields: [authorId], references: [id])
 
   @@index([authorId])
 }
@@ -121,5 +124,5 @@ model Article {
 model Tag {
   id       Int       @id @default(autoincrement())
   name     String
-  articles Article[]
+  articles Article[] @relation("ArticleToTag")
 }
