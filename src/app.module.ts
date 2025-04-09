@@ -11,6 +11,7 @@ import {
   UploadModule,
   ArticleModule,
   AkshareModule,
+  TushareModule,
   MailModule,
 } from './modules';
 
@@ -44,6 +45,7 @@ import {
     UploadModule,
     ArticleModule,
     AkshareModule,
+    TushareModule,
     MailModule,
   ],
   controllers: [AppController],

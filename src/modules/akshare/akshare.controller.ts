@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AkshareService } from './akshare.service';
-import { Public } from 'src/constants';
+import { Public, OnlyMaxRole } from 'src/constants';
 
 @ApiTags('akshare')
 @Controller('akshare')
@@ -53,6 +53,7 @@ export class AkshareController {
   /**
    * 清除特定API的缓存
    */
+  @OnlyMaxRole()
   @Post('cache/invalidate/:apiName')
   async invalidateCache(
     @Param('apiName') apiName: string,
@@ -65,6 +66,7 @@ export class AkshareController {
   /**
    * 获取缓存统计信息
    */
+  @OnlyMaxRole()
   @Get('cache/stats')
   getCacheStats() {
     return this.akshareService.getCacheStats();
@@ -73,6 +75,7 @@ export class AkshareController {
   /**
    * 重置缓存统计
    */
+  @OnlyMaxRole()
   @Post('cache/stats/reset')
   resetCacheStats() {
     this.akshareService.resetCacheStats();
