@@ -166,19 +166,20 @@ export class TushareService {
    * Tushare返回的是fields和items分开的格式，我们转为对象数组
    */
   private transformTushareData(data: any): any {
-    return data;
-    // if (!data || !data.fields || !data.items) {
-    //   return [];
-    // }
+    if (!data || !data.fields || !data.items) {
+      return [];
+    }
 
-    // const { fields, items } = data;
-    // return items.map((item) => {
-    //   const obj = {};
-    //   fields.forEach((field, index) => {
-    //     obj[field] = item[index];
-    //   });
-    //   return obj;
-    // });
+    const { fields, items, ...rest } = data;
+    const list = items.map((item) => {
+      const obj = {};
+      fields.forEach((field, index) => {
+        obj[field] = item[index];
+      });
+      return obj;
+    });
+
+    return { list, ...rest };
   }
 
   /**
